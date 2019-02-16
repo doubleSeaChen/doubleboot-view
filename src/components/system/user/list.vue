@@ -4,7 +4,7 @@
     <el-table id="exampleTalbe" :data="tableDatas" >
       <el-table-column prop="id" label="id" width="140" v-if="show">
       </el-table-column>
-      <el-table-column prop="userName" label="用户名" width="140">
+      <el-table-column prop="userName" label="用户名a" width="140">
       </el-table-column>
       <el-table-column prop="name" label="姓名" width="120">
       </el-table-column>
