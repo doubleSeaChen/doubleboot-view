@@ -5,9 +5,7 @@
         <el-submenu :index="item.text" v-for="item in menu" :key="item.text">
           <template slot="title" v-if="item.text" ><i :class="item.icon"></i>{{ item.text }}</template>
           <el-menu-item-group>
-            <!--<router-link v-for="child in item.children" :key="child.text" :to="child.path">-->
               <el-menu-item v-for="child in item.children" :key="child.text" :index="child.path"><i :class="child.icon"></i>{{ child.text }}</el-menu-item>
-            <!--</router-link>-->
           </el-menu-item-group>
         </el-submenu>
       </el-menu>
@@ -46,7 +44,6 @@ export default {
       const _this = this
       _this.menu = JSON.parse(localStorage.getItem('menuData'))
       _this.imgUrl = '/api' + JSON.parse(localStorage.getItem('user')).headPath
-      console.log(_this.menu)
     })
   },
   data: function () {

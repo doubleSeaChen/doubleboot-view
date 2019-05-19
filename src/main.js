@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import 'font-awesome/scss/font-awesome.scss'
+import {formatRoutes} from './utils/utils'
 Vue.config.productionTip = false
 
 router.beforeEach((to, from, next) => {
@@ -19,53 +20,15 @@ router.beforeEach((to, from, next) => {
       next()
     }
   } else {
-    next()
-  }
-
-  /* console.log('beforeEache data is : ' + localStorage.getItem('menuData'))
-  if (localStorage.getItem('menuData') === null) {
-    console.log('beforeEache没得数据')
-    console.log('用户数据：' + localStorage.getItem('user'))
-    if (localStorage.getItem('user') === null) {
-      console.log('用户没存储信息，进入登录页')
-      next('/')
-    } else {
-      console.log('----------------初始化菜单开始-----------------')
-      initMenu2(router)
-      if (to.path !== null) {
-        next()
-      }
-      console.log('----------------初始化菜单结束-----------------')
+    let fmtRoutes = formatRoutes(JSON.parse(localStorage.getItem('menuData')))
+    for (let i = 0; i < fmtRoutes.length; i++) {
+      router.addRoutes(fmtRoutes)
     }
-  } else {
     if (to.path !== null) {
       next()
     }
-    /!* console.log('----------------初始化菜单开始-----------------')
-    initMenu(router, JSON.parse(localStorage.getItem('menuData')))
-    if (to.path !== null) {
-      next()
-    }
-    console.log('----------------初始化菜单结束-----------------') *!/
-  } */
-}
-)
-/* if (to.name == 'Login') {
-    next()
-    return
   }
-  var name = store.state.user.name
-  if (name == '未登录') {
-    if (to.meta.requireAuth || to.name == null) {
-      next({path: '/', query: {redirect: to.path}})
-    } else {
-      next()
-    }
-  } else {
-    initMenu(router, store)
-    if (to.path == '/chat') { store.commit('updateMsgList', []) }
-    next()
-  } */
+})
 
 /* eslint-disable no-new */
 
@@ -101,11 +64,5 @@ new Vue({
   el: '#app',
   router,
   components: { App },
-  template: '<App/>',
-  computed: {
-    routes () {
-      return global.antRouter
-    }
-
-  }
+  template: '<App/>'
 })

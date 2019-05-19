@@ -44,17 +44,3 @@ export const initMenu2 = (router) => {
     console.log(response)
   })
 }
-
-/* export const initMenu = (router, data) => {
-  var fmtRoutes = formatRoutes(data)
-  console.log('*****************************待添加1**********************************')
-  for (let i = 0; i < fmtRoutes.length; i++) {
-    console.log(fmtRoutes[i])
-    router.addRoutes(fmtRoutes)
-  }
-  console.log('*****************************待添加2**********************************')
-  // router.addRoutes(fmtRoutes)
-  console.log('*****************************添加后的路由1**********************************')
-  console.log(router)
-  console.log('*****************************添加后的路由2**********************************')
-} */

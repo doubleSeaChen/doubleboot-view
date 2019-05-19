@@ -10,6 +10,7 @@ Vue.use(ElementUI)
 Vue.prototype.$ajax = axios
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',

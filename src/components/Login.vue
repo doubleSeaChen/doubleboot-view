@@ -100,7 +100,6 @@ export default {
           localStorage.setItem('menuData', JSON.stringify(response.data))
           let fmtRoutes = formatRoutes(response.data)
           for (let i = 0; i < fmtRoutes.length; i++) {
-            console.log(fmtRoutes[i])
             router.addRoutes(fmtRoutes)
           }
           _this.$nextTick(function () {
