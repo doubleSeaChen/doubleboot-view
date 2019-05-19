@@ -20,6 +20,10 @@ router.beforeEach((to, from, next) => {
       next()
     }
   } else {
+    if (to.matched.length === 0) {
+      next({path: '/main'})
+      return
+    }
     let fmtRoutes = formatRoutes(JSON.parse(localStorage.getItem('menuData')))
     for (let i = 0; i < fmtRoutes.length; i++) {
       router.addRoutes(fmtRoutes)
