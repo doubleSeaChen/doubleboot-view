@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <el-button type="primary" style="float:left" v-on:click="getMenuTree" @click="dialogAddFormVisible=true" v-has="'sys:role:add'">新增</el-button>
-    <el-table id="exampleTalbe" :data="tableDatas" >
+  <div style="margin-top:-15px;">
+    <el-button size="mini" type="primary" style="float:left;margin-bottom:10px;" v-on:click="getMenuTree" @click="dialogAddFormVisible=true" v-has="'sys:role:add'">新增</el-button>
+    <el-table id="exampleTalbe" :data="tableDatas" border>
       <el-table-column prop="id" label="id" width="140" v-if="show">
       </el-table-column>
       <el-table-column prop="name" label="角色名" width="140">
@@ -13,17 +13,18 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
-            size="mini" @click="showEditDialog(scope.$index, scope.row)" v-has="'sys:role:update'">编辑</el-button>
+            size="mini" type="success" icon="el-icon-edit" @click="showEditDialog(scope.$index, scope.row)" v-has="'sys:role:update'"></el-button>
           <el-button
-            size="mini"
-            type="danger" @click="deleteRole(scope.row.id, scope.row.name)" v-has="'sys:role:delete'">删除</el-button>
+            size="mini" type="danger" icon="el-icon-delete"  @click="deleteRole(scope.row.id, scope.row.name)" v-has="'sys:role:delete'"></el-button>
         </template>
       </el-table-column>
     </el-table>
     <el-pagination
-      background
-      layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="5"
-      :total="total">
+      @current-change="handleCurrentChange"
+      :current-page="1"
+      :page-size="10"
+      layout="total, prev, pager, next, jumper"
+      :total="total" style="margin-top:15px; text-align:left;">
     </el-pagination>
     <el-dialog title="角色信息" :visible.sync="dialogAddFormVisible">
       <el-form :model="addForm" :rules="addRules" ref="addForm">
@@ -116,7 +117,7 @@ export default {
       total: 0,
       params: {
         offset: 0,
-        limit: 5
+        limit: 10
       },
       addRules: {
         name: [
@@ -137,8 +138,8 @@ export default {
   },
   methods: {
     handleCurrentChange (val) {
-      this.params.offset = 5 * (val - 1)
-      this.params.limit = 5
+      this.params.offset = 10 * (val - 1)
+      this.params.limit = 10
       this.getData(this.params)
     },
     getData: function (params) {

@@ -1,15 +1,15 @@
 <template>
-  <div class="app-container">
-    <el-button type="primary" style="float:left" @click="showAddDialog('1','','')" v-has="'sys:menu:add'">新增</el-button>
+  <div class="app-container"  style="margin-top:-15px;">
+    <el-button size="mini" type="primary" style="float:left;margin-bottom:10px;" @click="showAddDialog('1','','')" v-has="'sys:menu:add'">新增</el-button>
     <!--<el-button type="primary" style="float:left" @click="showMenuIcon()">图标</el-button>-->
     <tree-table :data="data" :columns="columns" border @getAuth="getAuth">
       <el-table-column label="权限标识" prop="object.sign"></el-table-column>
       <el-table-column label="组件路径" prop="object.component"></el-table-column>
       <el-table-column label="操作" width="250">
         <template slot-scope="scope">
-          <el-button size="mini" @click="showAddDialog('2',scope.row.text,scope.row.id)" v-has="'sys:menu:add'">增加下级</el-button>
-          <el-button size="mini" @click="showEditDialog(scope.$index,scope.row)" v-has="'sys:menu:update'">编辑</el-button>
-          <el-button size="mini" type="danger" @click="remove(scope.row.object.id, scope.row.object.name)" v-has="'sys:menu:delete'">删除</el-button>
+          <el-button size="mini" type="primary" icon="el-icon-plus" @click="showAddDialog('2',scope.row.text,scope.row.id)" v-has="'sys:menu:add'"></el-button>
+          <el-button size="mini" type="success" icon="el-icon-edit" @click="showEditDialog(scope.$index,scope.row)" v-has="'sys:menu:update'"></el-button>
+          <el-button size="mini" type="danger" icon="el-icon-delete" @click="remove(scope.row.object.id, scope.row.object.name)" v-has="'sys:menu:delete'"></el-button>
         </template>
       </el-table-column>
     </tree-table>

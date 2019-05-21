@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <el-button type="primary" style="float:left" @click="showAddUser" v-has="'sys:user:add'">新增</el-button>
-    <el-table id="exampleTalbe" :data="tableDatas" >
+  <div style="margin-top:-15px;">
+    <el-button size="mini" type="primary" style="float:left;margin-bottom:10px;" @click="showAddUser" v-has="'sys:user:add'">新增</el-button>
+    <el-table id="exampleTalbe" :data="tableDatas" border>
       <el-table-column prop="id" label="id" width="140" v-if="show">
       </el-table-column>
       <el-table-column prop="userName" label="用户名" width="140">
@@ -12,21 +12,21 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
+          <el-button size="mini" type="success" icon="el-icon-edit" @click="showEditDialog(scope.$index, scope.row)" v-has="'sys:user:update'"></el-button>
           <el-button
-            size="mini" @click="showEditDialog(scope.$index, scope.row)" v-has="'sys:user:update'">编辑</el-button>
-          <el-button
-            size="mini"
-            type="danger" @click="deleteUser(scope.row.id, scope.row.userName)" v-has="'sys:user:delete'">删除</el-button>
+            size="mini" type="danger" icon="el-icon-delete" @click="deleteUser(scope.row.id, scope.row.userName)" v-has="'sys:user:delete'"></el-button>
         </template>
       </el-table-column>
     </el-table>
     <el-pagination
-      background
-      layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="5"
-      :total="total">
+      @current-change="handleCurrentChange"
+      :current-page="1"
+      :page-size="10"
+      layout="total, prev, pager, next, jumper"
+      :total="total" style="margin-top:15px; text-align:left;">
     </el-pagination>
 
-    <el-dialog title="人员信息" :visible.sync="dialogFormVisible">
+    <el-dialog title="新增" :visible.sync="dialogFormVisible">
       <el-form :model="form" :rules="addRules" ref="form">
         <el-form-item label="用户名" prop="userName" :label-width="formLabelWidth">
           <el-input v-model="form.userName" autocomplete="off"></el-input>
@@ -61,7 +61,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="人员信息" :visible.sync="dialogEditFormVisible">
+    <el-dialog title="编辑" :visible.sync="dialogEditFormVisible">
       <el-form :model="editForm" :rules="editRules" ref="editForm">
         <el-form-item label="ID" :label-width="formLabelWidth" v-show="false">
           <el-input v-model="editForm.id" autocomplete="off"></el-input>
@@ -152,7 +152,7 @@ export default {
       total: 0,
       params: {
         offset: 0,
-        limit: 5
+        limit: 10
       },
       addRules: {
         userName: [
@@ -241,8 +241,8 @@ export default {
       })
     },
     handleCurrentChange (val) {
-      this.params.offset = 5 * (val - 1)
-      this.params.limit = 5
+      this.params.offset = 10 * (val - 1)
+      this.params.limit = 10
       this.getData(this.params)
     },
     getData: function (params) {

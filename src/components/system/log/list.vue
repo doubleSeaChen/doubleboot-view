@@ -1,7 +1,7 @@
 <!--suppress ALL -->
 <template>
-  <div>
-    <el-table id="logTalbe" :data="tableDatas">
+  <div style="margin-top:-15px;">
+    <el-table id="logTalbe" :data="tableDatas" border>
       <el-table-column prop="id" label="id" width="140" v-if="show">
       </el-table-column>
       <el-table-column prop="name" label="姓名" width="120">
@@ -16,9 +16,11 @@
       </el-table-column>
     </el-table>
     <el-pagination
-      background
-      layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="5"
-      :total="total">
+      @current-change="handleCurrentChange"
+      :current-page="1"
+      :page-size="10"
+      layout="total, prev, pager, next, jumper"
+      :total="total" style="margin-top:15px; text-align:left;">
     </el-pagination>
   </div>
 </template>
@@ -33,7 +35,7 @@ export default {
       show: '',
       params: {
         offset: 0,
-        limit: 5
+        limit: 10
       },
       total: 0
     }
@@ -45,8 +47,8 @@ export default {
   },
   methods: {
     handleCurrentChange (val) {
-      this.params.offset = 5 * (val - 1)
-      this.params.limit = 5
+      this.params.offset = 10 * (val - 1)
+      this.params.limit = 10
       this.getData(this.params)
     },
     getData: function (params) {

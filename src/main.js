@@ -6,7 +6,6 @@ import router from './router'
 import 'font-awesome/scss/font-awesome.scss'
 import {formatRoutes} from './utils/utils'
 Vue.config.productionTip = false
-
 router.beforeEach((to, from, next) => {
   if (to.name === 'Login') {
     next()
