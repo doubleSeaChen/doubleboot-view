@@ -29,7 +29,7 @@
       :current-page="1"
       :page-size="10"
       layout="total, prev, pager, next, jumper"
-      :total="total" style="margin-top:15px; text-align:left;">
+      :total="total" style="margin-top:15px; text-align:right;">
     </el-pagination>
     <el-dialog title="新增" :visible.sync="dialogAddFormVisible">
       <el-form :model="addForm" :rules="addRules" ref="addForm">

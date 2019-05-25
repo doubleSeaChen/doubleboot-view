@@ -57,4 +57,15 @@ export default {
   float: right;
   display: inline-flex;
 }
+.el-tabs__item {
+  height: 35px;
+  line-height: 35px;
+}
+.el-tabs__item.is-active {
+  color: #fafafb;
+  background-color: #565565;
+}
+.el-tabs--card>.el-tabs__header .el-tabs__nav {
+  border: none;
+}
 </style>
