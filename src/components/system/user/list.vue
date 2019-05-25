@@ -1,6 +1,13 @@
 <template>
   <div style="margin-top:-15px;">
-    <el-button size="mini" type="primary" style="float:left;margin-bottom:10px;" @click="showAddUser" v-has="'sys:user:add'">新增</el-button>
+    <div class="operationNav">
+      <el-button size="mini" type="primary" style="float:left;margin-bottom:10px;" @click="showAddUser" v-has="'sys:user:add'">新增</el-button>
+      <div class="operationNavForm">
+          <el-input class="searchInput" placeholder="用户名搜索" clearable></el-input>
+          <el-button size="mini" type="primary" icon="el-icon-search"></el-button>
+          <el-button size="mini" type="primary" icon="el-icon-plus" style="margin-left:2px;"></el-button>
+      </div>
+    </div>
     <el-table id="exampleTalbe" :data="tableDatas" stripe>
       <el-table-column prop="id" label="id" width="140" v-if="show">
       </el-table-column>
@@ -56,8 +63,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" v-on:click="addUser('form')">确 定</el-button>
+        <el-button size="mini" @click="dialogFormVisible = false">取 消</el-button>
+        <el-button size="mini" type="primary" v-on:click="addUser('form')">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -85,8 +92,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" v-on:click="editUser('editForm')" >确 定</el-button>
+        <el-button size="mini" @click="dialogFormVisible = false">取 消</el-button>
+        <el-button size="mini" type="primary" v-on:click="editUser('editForm')" >确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -94,6 +101,11 @@
 
 <script>
 import axios from 'axios'
+import 'element-ui/lib/theme-chalk/base.css'
+// collapse 展开折叠
+import CollapseTransition from 'element-ui/lib/transitions/collapse-transition'
+import Vue from 'vue'
+Vue.component(CollapseTransition.name, CollapseTransition)
 let checkPhone = (rule, value, callback) => {
   const phoneReg = /^1[3|4|5|7|8][0-9]{9}$/
   if (!value) {
@@ -365,4 +377,10 @@ export default {
   #exampleTalbe{
     text-align: left;
   }
+  .operationNav{
+    /*height:40px;line-height:40px;*/
+  }
+</style>
+<style>
+
 </style>

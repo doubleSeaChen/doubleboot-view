@@ -1,6 +1,13 @@
 <!--suppress ALL -->
 <template>
   <div style="margin-top:-15px;">
+    <div class="operationNav">
+      <div class="operationNavForm" style="margin-bottom:5px;">
+        <el-input class="searchInput" placeholder="用户名搜索" clearable></el-input>
+        <el-button size="mini" type="primary" icon="el-icon-search"></el-button>
+        <el-button size="mini" type="primary" icon="el-icon-plus" style="margin-left:2px;"></el-button>
+      </div>
+    </div>
     <el-table id="logTalbe" :data="tableDatas" stripe>
       <el-table-column prop="id" label="id" width="140" v-if="show">
       </el-table-column>

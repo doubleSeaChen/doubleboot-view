@@ -21,8 +21,7 @@
       <el-header style="height:50px;text-align:right;background-color:#545C64;line-height:50px;">
         <el-popover
           placement="bottom"
-          title="个人中心"
-          width="200"
+          width="100"
           trigger="click">
           <div style="text-align: right; margin: 0">
             <span class="personMsg"><a @click="addTab(editableTabsValue, '个人信息', '/person_message',2)">个人信息</a></span><hr/>

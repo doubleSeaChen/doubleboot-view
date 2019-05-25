@@ -1,6 +1,11 @@
 <template>
   <div style="margin-top:-15px;">
     <el-button size="mini" type="primary" style="float:left;margin-bottom:10px;" v-on:click="getMenuTree" @click="dialogAddFormVisible=true" v-has="'sys:role:add'">新增</el-button>
+    <div class="operationNavForm">
+      <el-input class="searchInput" placeholder="角色名搜索" clearable></el-input>
+      <el-button size="mini" type="primary" icon="el-icon-search"></el-button>
+      <el-button size="mini" type="primary" icon="el-icon-plus" style="margin-left:2px;"></el-button>
+    </div>
     <el-table id="exampleTalbe" :data="tableDatas" stripe>
       <el-table-column prop="id" label="id" width="140" v-if="show">
       </el-table-column>
@@ -26,7 +31,7 @@
       layout="total, prev, pager, next, jumper"
       :total="total" style="margin-top:15px; text-align:left;">
     </el-pagination>
-    <el-dialog title="角色信息" :visible.sync="dialogAddFormVisible">
+    <el-dialog title="新增" :visible.sync="dialogAddFormVisible">
       <el-form :model="addForm" :rules="addRules" ref="addForm">
         <el-form-item label="角色名" prop="name" :label-width="formLabelWidth">
           <el-input v-model="addForm.name" autocomplete="off"></el-input>
@@ -48,12 +53,12 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" v-on:click="addRole('addForm')">确 定</el-button>
+        <el-button size="mini" @click="dialogFormVisible = false">取 消</el-button>
+        <el-button size="mini" type="primary" v-on:click="addRole('addForm')">确 定</el-button>
       </div>
     </el-dialog>
 
-    <el-dialog title="角色信息" :visible.sync="dialogEditFormVisible">
+    <el-dialog title="编辑" :visible.sync="dialogEditFormVisible">
       <el-form :model="editForm" :rules="editRules" ref="editForm">
         <el-form-item label="ID" :label-width="formLabelWidth" v-show="false">
           <el-input v-model="editForm.id" autocomplete="off"></el-input>
@@ -78,8 +83,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" v-on:click="editRole('editForm')">确 定</el-button>
+        <el-button size="mini" @click="dialogFormVisible = false">取 消</el-button>
+        <el-button size="mini" type="primary" v-on:click="editRole('editForm')">确 定</el-button>
       </div>
     </el-dialog>
   </div>

@@ -32,4 +32,29 @@ export default {
 .el-table thead {
   color: #333333;
 }
+.el-dialog__header {
+  background-color:#545c64;
+}
+.el-dialog__title {
+  line-height: 18px;
+  color: white;
+}
+.el-dialog__headerbtn .el-dialog__close {
+  color: #f2fdfc;
+}
+.el-dialog__footer {
+  padding: 6px 20px 6px;
+  border-top: solid 1px #e8ebee;
+}
+.searchInput input{
+  height: 32px!important;
+  width: 150px;
+  border-radius: 0px;
+  float: right!important;
+  margin-right: 3px;
+}
+.operationNavForm{
+  float: right;
+  display: inline-flex;
+}
 </style>

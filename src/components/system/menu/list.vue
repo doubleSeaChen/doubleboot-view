@@ -1,7 +1,11 @@
 <template>
   <div class="app-container"  style="margin-top:-15px;">
     <el-button size="mini" type="primary" style="float:left;margin-bottom:10px;" @click="showAddDialog('1','','')" v-has="'sys:menu:add'">新增</el-button>
-    <!--<el-button type="primary" style="float:left" @click="showMenuIcon()">图标</el-button>-->
+    <div class="operationNavForm">
+      <el-input class="searchInput" placeholder="菜单名称搜索" clearable></el-input>
+      <el-button size="mini" type="primary" icon="el-icon-search"></el-button>
+      <el-button size="mini" type="primary" icon="el-icon-plus" style="margin-left:2px;"></el-button>
+    </div>
     <tree-table :data="data" :columns="columns" stripe @getAuth="getAuth">
       <el-table-column label="权限标识" prop="object.sign"></el-table-column>
       <el-table-column label="组件路径" prop="object.component"></el-table-column>
@@ -14,7 +18,7 @@
       </el-table-column>
     </tree-table>
 
-    <el-dialog title="新增菜单" :visible.sync="dialogFormTop">
+    <el-dialog title="新增" :visible.sync="dialogFormTop">
       <el-form :model="form" :rules="addRules" ref="form">
         <el-form-item label="上级菜单" :label-width="formLabelWidth">
           <el-input v-model="form.parentName" autocomplete="off" :disabled="true"></el-input>
@@ -41,12 +45,12 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormTop = false">取 消</el-button>
-        <el-button type="primary" v-on:click="addMenu('form')">确 定</el-button>
+        <el-button size="mini" @click="dialogFormTop = false">取 消</el-button>
+        <el-button size="mini" type="primary" v-on:click="addMenu('form')">确 定</el-button>
       </div>
     </el-dialog>
 
-    <el-dialog title="编辑菜单" :visible.sync="dialogFormEdit">
+    <el-dialog title="编辑" :visible.sync="dialogFormEdit">
       <el-form :model="editForm" :rules="editRules" ref="editForm">
         <el-form-item label="ID" :label-width="formLabelWidth" v-show="false">
           <el-input v-model="editForm.id" autocomplete="off"></el-input>
@@ -72,8 +76,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormEdit = false">取 消</el-button>
-        <el-button type="primary" v-on:click="editMenu('editForm')">确 定</el-button>
+        <el-button size="mini" @click="dialogFormEdit = false">取 消</el-button>
+        <el-button size="mini" type="primary" v-on:click="editMenu('editForm')">确 定</el-button>
       </div>
     </el-dialog>
 
