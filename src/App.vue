@@ -23,9 +23,13 @@ export default {
 .el-table__header tr,.el-table__header th {
   padding: 0;
   height: 50px;
+  background-color: #e9edf1;
 }
 .el-table__body tr,.el-table__body td {
   padding: 0;
   height: 40px;
+}
+.el-table thead {
+  color: #333333;
 }
 </style>

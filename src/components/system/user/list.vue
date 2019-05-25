@@ -1,7 +1,7 @@
 <template>
   <div style="margin-top:-15px;">
     <el-button size="mini" type="primary" style="float:left;margin-bottom:10px;" @click="showAddUser" v-has="'sys:user:add'">新增</el-button>
-    <el-table id="exampleTalbe" :data="tableDatas" border>
+    <el-table id="exampleTalbe" :data="tableDatas" stripe>
       <el-table-column prop="id" label="id" width="140" v-if="show">
       </el-table-column>
       <el-table-column prop="userName" label="用户名" width="140">

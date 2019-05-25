@@ -2,7 +2,7 @@
   <div class="app-container"  style="margin-top:-15px;">
     <el-button size="mini" type="primary" style="float:left;margin-bottom:10px;" @click="showAddDialog('1','','')" v-has="'sys:menu:add'">新增</el-button>
     <!--<el-button type="primary" style="float:left" @click="showMenuIcon()">图标</el-button>-->
-    <tree-table :data="data" :columns="columns" border @getAuth="getAuth">
+    <tree-table :data="data" :columns="columns" stripe @getAuth="getAuth">
       <el-table-column label="权限标识" prop="object.sign"></el-table-column>
       <el-table-column label="组件路径" prop="object.component"></el-table-column>
       <el-table-column label="操作" width="250">

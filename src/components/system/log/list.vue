@@ -1,7 +1,7 @@
 <!--suppress ALL -->
 <template>
   <div style="margin-top:-15px;">
-    <el-table id="logTalbe" :data="tableDatas" border>
+    <el-table id="logTalbe" :data="tableDatas" stripe>
       <el-table-column prop="id" label="id" width="140" v-if="show">
       </el-table-column>
       <el-table-column prop="name" label="姓名" width="120">
