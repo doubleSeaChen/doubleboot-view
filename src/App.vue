@@ -68,4 +68,8 @@ export default {
 .el-tabs--card>.el-tabs__header .el-tabs__nav {
   border: none;
 }
+.el-submenu__title i {
+  color: #f9f9f9;
+  margin-right: 4px;
+}
 </style>
