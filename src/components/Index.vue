@@ -27,6 +27,7 @@
             <span class="personMsg"><a @click="addTab(editableTabsValue, '个人信息', '/person_message',2)">个人信息</a></span><hr/>
             <span class="personMsg"><a @click="addTab(editableTabsValue, '密码修改', '/pwd_update',2)">密码修改</a></span><hr/>
             <span class="personMsg"><a @click="addTab(editableTabsValue, '头像上传', '/head_portrait',2)">头像上传</a></span><hr/>
+            <span class="personMsg"><a @click="logout">退出</a></span>
           </div>
           <button ref="imgBtn" slot="reference" style="width:40px; height:40px;">
           </button>
