@@ -2,9 +2,9 @@
   <div style="margin-top:-15px;">
     <el-button size="mini" type="primary" style="float:left;margin-bottom:10px;" v-on:click="getMenuTree" @click="dialogAddFormVisible=true" v-has="'sys:role:add'">新增</el-button>
     <div class="operationNavForm">
-      <el-input class="searchInput" placeholder="角色名搜索" clearable></el-input>
-      <el-button size="mini" type="primary" icon="el-icon-search"></el-button>
-      <el-button size="mini" type="primary" icon="el-icon-plus" style="margin-left:2px;"></el-button>
+      <el-input v-model="searchName" class="searchInput" placeholder="角色名搜索" clearable></el-input>
+      <el-button size="mini" type="primary" icon="el-icon-search" @click="searchData"></el-button>
+      <!--<el-button size="mini" type="primary" icon="el-icon-plus" style="margin-left:2px;"></el-button>-->
     </div>
     <el-table id="exampleTalbe" :data="tableDatas" stripe>
       <el-table-column prop="id" label="id" width="140" v-if="show">
@@ -101,6 +101,7 @@ export default {
       form: '',
       dialogAddFormVisible: false,
       dialogEditFormVisible: false,
+      searchName: '',
       addForm: {
         name: '',
         sign: '',
@@ -158,6 +159,22 @@ export default {
         _this.$message({
           showClose: true,
           message: '请求数据失败，请联系管理员...',
+          type: 'error'
+        })
+      })
+    },
+    searchData: function () {
+      let _this = this
+      this.params.offset = 0
+      this.params.limit = 10
+      this.params.name = this.searchName
+      axios.get('/api/role/list', {params: this.params}).then(function (response) {
+        _this.tableDatas = response.data.roleList
+        _this.total = response.data.total
+      }).catch(function (response) {
+        _this.$message({
+          showClose: true,
+          message: '查询失败，请联系管理员...',
           type: 'error'
         })
       })

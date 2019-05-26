@@ -3,9 +3,9 @@
     <div class="operationNav">
       <el-button size="mini" type="primary" style="float:left;margin-bottom:10px;" @click="showAddUser" v-has="'sys:user:add'">新增</el-button>
       <div class="operationNavForm">
-          <el-input class="searchInput" placeholder="用户名搜索" clearable></el-input>
-          <el-button size="mini" type="primary" icon="el-icon-search"></el-button>
-          <el-button size="mini" type="primary" icon="el-icon-plus" style="margin-left:2px;"></el-button>
+          <el-input v-model="searchUserName" class="searchInput" placeholder="用户名搜索" clearable></el-input>
+          <el-button size="mini" type="primary" icon="el-icon-search" @click="searchData"></el-button>
+          <!--<el-button size="mini" type="primary" icon="el-icon-plus" style="margin-left:2px;"></el-button>-->
       </div>
     </div>
     <el-table id="exampleTalbe" :data="tableDatas" stripe>
@@ -141,6 +141,7 @@ export default {
       dialogEditFormVisible: false,
       roles: '',
       rolesUpdate: '',
+      searchUserName: '',
       roleList: [],
       roleUpdateList: [],
       roleUpdatePre: [],
@@ -208,6 +209,7 @@ export default {
   },
   mounted: function () {
     this.$nextTick(function () {
+      console.log('页面初始化完成请求数据')
       this.getData(this.params)
     })
   },
@@ -257,7 +259,7 @@ export default {
       this.getData(this.params)
     },
     getData: function (params) {
-      let _this = this // 很重要！！
+      let _this = this
       axios.get('/api/user/list', {params: params}).then(function (response) {
         _this.tableDatas = response.data.userList
         _this.total = response.data.total
@@ -265,6 +267,22 @@ export default {
         _this.$message({
           showClose: true,
           message: '请求数据失败，请联系管理员...',
+          type: 'error'
+        })
+      })
+    },
+    searchData: function () {
+      let _this = this
+      this.params.offset = 0
+      this.params.limit = 10
+      this.params.userName = this.searchUserName
+      axios.get('/api/user/list', {params: this.params}).then(function (response) {
+        _this.tableDatas = response.data.userList
+        _this.total = response.data.total
+      }).catch(function (response) {
+        _this.$message({
+          showClose: true,
+          message: '查询失败，请联系管理员...',
           type: 'error'
         })
       })

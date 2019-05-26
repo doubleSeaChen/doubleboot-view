@@ -3,9 +3,9 @@
   <div style="margin-top:-15px;">
     <div class="operationNav">
       <div class="operationNavForm" style="margin-bottom:5px;">
-        <el-input class="searchInput" placeholder="用户名搜索" clearable></el-input>
-        <el-button size="mini" type="primary" icon="el-icon-search"></el-button>
-        <el-button size="mini" type="primary" icon="el-icon-plus" style="margin-left:2px;"></el-button>
+        <el-input v-model="searchUserName" class="searchInput" placeholder="用户名搜索" clearable></el-input>
+        <el-button size="mini" type="primary" icon="el-icon-search" @click="searchData"></el-button>
+        <!--<el-button size="mini" type="primary" icon="el-icon-plus" style="margin-left:2px;"></el-button>-->
       </div>
     </div>
     <el-table id="logTalbe" :data="tableDatas" stripe>
@@ -40,6 +40,7 @@ export default {
     return {
       tableDatas: [],
       show: '',
+      searchUserName: '',
       params: {
         offset: 0,
         limit: 10
@@ -59,12 +60,28 @@ export default {
       this.getData(this.params)
     },
     getData: function (params) {
-      var _this = this // 很重要！！
+      var _this = this
       axios.get('/api/sys/log/list', {params: params}).then(function (response) {
         _this.tableDatas = response.data.logList
         _this.total = response.data.total
       }).catch(function (response) {
         console.log('前后端分离测试failed:' + response)
+      })
+    },
+    searchData: function () {
+      let _this = this
+      this.params.offset = 0
+      this.params.limit = 10
+      this.params.userName = this.searchUserName
+      axios.get('/api/sys/log/list', {params: this.params}).then(function (response) {
+        _this.tableDatas = response.data.logList
+        _this.total = response.data.total
+      }).catch(function (response) {
+        _this.$message({
+          showClose: true,
+          message: '查询失败，请联系管理员...',
+          type: 'error'
+        })
       })
     }
   }

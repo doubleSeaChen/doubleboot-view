@@ -229,7 +229,7 @@ export default {
             })
           })
         } else {
-          return false;
+          return false
         }
       })
     },
