@@ -247,7 +247,6 @@ export default {
           }).catch(function (response) {
           })
         } else {
-          alert('error')
           return false
         }
       })

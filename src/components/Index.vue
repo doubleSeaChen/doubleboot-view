@@ -119,13 +119,12 @@ export default {
       imgUrl: '',
       editableTabsValue: '2',
       editableTabs: [{
-        title: 'Tab 1',
+        title: '首页',
         name: '1',
         content: 'Tab 1 content',
         path: '/demos'
       }],
-      tabIndex: 2,
-      okc: '../assets/logo.png'
+      tabIndex: 2
     }
   }
 }

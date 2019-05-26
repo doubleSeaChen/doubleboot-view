@@ -200,7 +200,6 @@ export default {
             })
           })
         } else {
-          alert('error')
           return false
         }
       })
@@ -264,7 +263,6 @@ export default {
             })
           })
         } else {
-          alert('error')
           return false
         }
       })
