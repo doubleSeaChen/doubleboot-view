@@ -20,8 +20,8 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" type="success" icon="el-icon-edit" @click="showEditDialog(scope.$index, scope.row)" v-has="'blog:edit'"></el-button>
-          <el-button
-            size="mini" type="danger" icon="el-icon-delete" @click="deleteBlog(scope.row.id, scope.row.title)" v-has="'blog:remove'"></el-button>
+          <el-button size="mini" type="danger" icon="el-icon-delete" @click="deleteBlog(scope.row.id, scope.row.title)" v-has="'blog:remove'"></el-button>
+          <el-button size="mini" type="info" icon="fa fa-info-circle" @click="deleteBlog(scope.row.id, scope.row.title)" v-has="'blog:remove'"></el-button>
         </template>
       </el-table-column>
     </el-table>
