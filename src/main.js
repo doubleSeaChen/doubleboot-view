@@ -40,8 +40,8 @@ router.beforeEach((to, from, next) => {
  *
  * **/
 Vue.directive('has', {
-  bind: function (el, binding) {
-    if (!Vue.prototype.$_has(binding.value)) {
+  inserted: function (el, binding) {
+    if (Vue.prototype.$_has(binding.value) === false) {
       el.parentNode.removeChild(el)
     }
   }

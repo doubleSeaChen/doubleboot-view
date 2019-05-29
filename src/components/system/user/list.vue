@@ -1,11 +1,11 @@
 <template>
   <div style="margin-top:-15px;">
+    <el-button id="addBtn" size="mini" type="primary" style="float:left;margin-bottom:10px;" @click="showAddUser" v-has="'sys:user:add'">新增</el-button>
     <div class="operationNav">
-      <el-button size="mini" type="primary" style="float:left;margin-bottom:10px;" @click="showAddUser" v-has="'sys:user:add'">新增</el-button>
       <div class="operationNavForm">
           <el-input v-model="searchUserName" class="searchInput" placeholder="用户名搜索" clearable></el-input>
           <el-button size="mini" type="primary" icon="el-icon-search" @click="searchData"></el-button>
-          <!--<el-button size="mini" type="primary" icon="el-icon-plus" style="margin-left:2px;"></el-button>-->
+          &lt;!&ndash;<el-button size="mini" type="primary" icon="el-icon-plus" style="margin-left:2px;"></el-button>&ndash;&gt;
       </div>
     </div>
     <el-table id="exampleTalbe" :data="tableDatas" stripe>
@@ -207,6 +207,7 @@ export default {
       }
     }
   },
+  waitForData: true,
   mounted: function () {
     this.$nextTick(function () {
       console.log('页面初始化完成请求数据')

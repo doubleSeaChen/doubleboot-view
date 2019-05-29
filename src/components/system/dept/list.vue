@@ -1,35 +1,35 @@
 <template>
   <div class="app-container"  style="margin-top:-15px;">
-    <el-button size="mini" type="primary" style="float:left;margin-bottom:10px;" @click="showAddDept" v-has="''">新增</el-button>
+    <el-button size="mini" type="primary" style="float:left;margin-bottom:10px;" @click="showAddDialog('1','','')" v-has="'system:dept:add'">新增</el-button>
     <div class="operationNavForm">
       <el-input class="searchInput" placeholder="搜索" clearable></el-input>
       <el-button size="mini" type="primary" icon="el-icon-search"></el-button>
       <el-button size="mini" type="primary" icon="el-icon-plus" style="margin-left:2px;"></el-button>
     </div>
     <tree-table :data="data" :columns="columns" stripe @getAuth="getAuth">
-      <el-table-column label="name" prop="object.text"></el-table-column>
+      <el-table-column label="" prop="object.text"></el-table-column>
       <el-table-column label="操作" width="250">
         <template slot-scope="scope">
           <el-button size="mini" type="primary" icon="el-icon-plus" @click="showAddDialog('2',scope.row.text,scope.row.id)" v-has="'system:dept:add'"></el-button>
           <el-button size="mini" type="success" icon="el-icon-edit" @click="showEditDialog(scope.$index,scope.row)" v-has="'system:dept:edit'"></el-button>
-          <el-button size="mini" type="danger" icon="el-icon-delete" @click="remove(scope.row.object.id, scope.row.object.name)" v-has="'system:dept:delete'"></el-button>
+          <el-button size="mini" type="danger" icon="el-icon-delete" @click="remove(scope.row.object.id, scope.row.object.name)" v-has="'system:dept:remove'"></el-button>
         </template>
       </el-table-column>
     </tree-table>
 
-    <el-dialog title="新增" :visible.sync="dialogFormVisible">
+    <el-dialog title="新增" :visible.sync="dialogFormTop">
       <el-form :model="form" :rules="addRules" ref="form">
         <el-form-item label="部门名称" prop="name" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="dialogFormVisible = false">取 消</el-button>
+        <el-button size="mini" @click="dialogFormTop = false">取 消</el-button>
         <el-button size="mini" type="primary" v-on:click="addDept('form')">确 定</el-button>
       </div>
     </el-dialog>
 
-    <el-dialog title="编辑" :visible.sync="dialogEditFormVisible">
+    <el-dialog title="编辑" :visible.sync="dialogFormTop">
       <el-form :model="editForm" :rules="editRules" ref="editForm">
         <el-form-item label="ID" :label-width="formLabelWidth" v-show="false">
           <el-input v-model="editForm.id" autocomplete="off"></el-input>
@@ -39,7 +39,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="dialogFormVisible = false">取 消</el-button>
+        <el-button size="mini" @click="dialogFormTop = false">取 消</el-button>
         <el-button size="mini" type="primary" v-on:click="editDept('editForm')" >确 定</el-button>
       </div>
     </el-dialog>
@@ -58,10 +58,9 @@
    */
 import treeTable from '@/components/TreeTableAuthor'
 import axios from 'axios'
-import MenuIcon from '../../menu_icon/menu_icon'
 export default {
   name: 'deptList',
-  components: { MenuIcon, treeTable },
+  components: { treeTable },
   data () {
     return {
       columns: [
@@ -97,33 +96,12 @@ export default {
       dialogMenuIcon: false,
       addRules: {
         name: [
-          {required: true, message: '请输入菜单名称', trigger: 'blur'}
-        ],
-        router: [
-          {required: true, message: '请输入菜单路径', trigger: 'blur'}
-        ],
-        component: [
-          {required: true, message: '请输入组件路径', trigger: 'blur'}
-        ],
-        type: [
-          { required: true, message: '请选择菜单类别', trigger: 'change' }
-        ],
-        sign: [
-          {required: true, message: '请输入菜单权限标识', trigger: 'blur'}
+          {required: true, message: '请输入部门名称', trigger: 'blur'}
         ]
       },
       editRules: {
         name: [
-          {required: true, message: '请输入菜单名称', trigger: 'blur'}
-        ],
-        router: [
-          {required: true, message: '请输入菜单路径', trigger: 'blur'}
-        ],
-        component: [
-          {required: true, message: '请输入组件路径', trigger: 'blur'}
-        ],
-        sign: [
-          {required: true, message: '请输入菜单权限标识', trigger: 'blur'}
+          {required: true, message: '请输入部门名称', trigger: 'blur'}
         ]
       }
     }
@@ -138,7 +116,6 @@ export default {
         opt.push(val.id)
         if (val.children) {
           val.children.forEach(el => {
-            console.log(val.id)
             if (el.selectchecked.length) {
               opt.push(el.id)
               opt.push(el.selectchecked)
@@ -146,24 +123,18 @@ export default {
           })
         }
       })
-      console.log(data)
       opt = opt.join().split(',').filter(n => { return n })
       console.log(opt)
     },
-    addMenu: function (form) {
+    addDept: function (form) {
       let _this = this
       _this.$refs[form].validate((valid) => {
         if (valid) {
-          let menu = {
-            name: this.form.name,
-            sign: this.form.sign,
-            component: this.form.component,
-            type: this.form.type,
-            parentId: this.form.parentId,
-            router: this.form.router
+          let dept = {
+            name: this.form.name
           }
-          axios.post('api/menu/save',
-            menu
+          axios.post('api/system/dept/save',
+            dept
           ).then(function (response) {
             if (response.data === 1) {
               _this.dialogFormTop = false
@@ -194,15 +165,13 @@ export default {
     },
     showAddDialog: function (isTop, name, id) {
       if (isTop === '1') {
-        this.form.parentName = '顶级菜单'
+        this.form.parentName = '顶级'
         this.form.parentId = 0
-        this.form.component = '/Index'
         this.isComponet = false
       } else {
         this.form.parentName = name
         this.form.parentId = id
         this.isComponet = true
-        this.form.component = ''
       }
       this.dialogFormTop = true
     },
