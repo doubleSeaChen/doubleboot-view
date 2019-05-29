@@ -12,13 +12,17 @@
         <template slot-scope="scope">
           <el-button size="mini" type="primary" icon="el-icon-plus" @click="showAddDialog('2',scope.row.text,scope.row.id)" v-has="'system:dept:add'"></el-button>
           <el-button size="mini" type="success" icon="el-icon-edit" @click="showEditDialog(scope.$index,scope.row)" v-has="'system:dept:edit'"></el-button>
-          <el-button size="mini" type="danger" icon="el-icon-delete" @click="remove(scope.row.object.id, scope.row.object.name)" v-has="'system:dept:remove'"></el-button>
+          <el-button size="mini" type="danger" icon="el-icon-delete" @click="remove(scope.row)" v-has="'system:dept:remove'"></el-button>
         </template>
       </el-table-column>
     </tree-table>
 
     <el-dialog title="新增" :visible.sync="dialogFormTop">
       <el-form :model="form" :rules="addRules" ref="form">
+        <el-form-item label="上级部门" :label-width="formLabelWidth">
+          <el-input v-model="form.parentName" autocomplete="off" :disabled="true"></el-input>
+          <el-input v-show="false" v-model="form.parentId" autocomplete="off"></el-input>
+        </el-form-item>
         <el-form-item label="部门名称" prop="name" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
@@ -29,7 +33,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="编辑" :visible.sync="dialogFormTop">
+    <el-dialog title="编辑" :visible.sync="dialogFormEdit">
       <el-form :model="editForm" :rules="editRules" ref="editForm">
         <el-form-item label="ID" :label-width="formLabelWidth" v-show="false">
           <el-input v-model="editForm.id" autocomplete="off"></el-input>
@@ -39,7 +43,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="dialogFormTop = false">取 消</el-button>
+        <el-button size="mini" @click="dialogFormEdit = false">取 消</el-button>
         <el-button size="mini" type="primary" v-on:click="editDept('editForm')" >确 定</el-button>
       </div>
     </el-dialog>
@@ -73,23 +77,15 @@ export default {
       ],
       data: [],
       dialogFormTop: false,
-      dialogForm: false,
       isComponet: true,
       form: {
         name: '',
-        component: '',
-        sign: '',
         parentName: '',
-        parentId: 0,
-        type: '',
-        router: ''
+        parentId: 0
       },
       editForm: {
-        name: '',
-        component: '',
-        sign: '',
-        type: '',
-        router: ''
+        id: '',
+        name: ''
       },
       formLabelWidth: '120px',
       dialogFormEdit: false,
@@ -131,9 +127,10 @@ export default {
       _this.$refs[form].validate((valid) => {
         if (valid) {
           let dept = {
-            name: this.form.name
+            name: this.form.name,
+            parentId: this.form.parentId
           }
-          axios.post('api/system/dept/save',
+          axios.post('/api/system/dept/save',
             dept
           ).then(function (response) {
             if (response.data === 1) {
@@ -176,23 +173,21 @@ export default {
       this.dialogFormTop = true
     },
     showEditDialog: function (index, row) {
+      debugger
       this.dialogFormEdit = true
-      this.editForm = Object.assign({}, row.object)
+      this.editForm.id = row.id
+      this.editForm.name = row.text
     },
-    editMenu: function (editForm) {
+    editDept: function (editForm) {
       let _this = this
       _this.$refs[editForm].validate((valid) => {
         if (valid) {
-          let menu = {
+          let dept = {
             id: this.editForm.id,
-            name: this.editForm.name,
-            sign: this.editForm.sign,
-            component: this.editForm.component,
-            type: this.editForm.type,
-            router: this.editForm.router
+            name: this.editForm.name
           }
-          axios.post('api/menu/update',
-            menu
+          axios.post('/api/system/dept/update',
+            dept
           ).then(function (response) {
             if (response.data === 1) {
               _this.dialogFormEdit = false
@@ -221,14 +216,15 @@ export default {
         }
       })
     },
-    remove: function (id, name) {
+    remove: function (row) {
+      debugger
       let _this = this
-      this.$confirm('是否删除菜单' + name + '?', '提示', {
+      this.$confirm('是否删除菜单' + row.text + '?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        axios.post('/api/menu/remove/' + id
+        axios.post('/api/system/dept/remove/' + row.id
         ).then(function (response) {
           if (response.data === 1) {
             _this.$message({
