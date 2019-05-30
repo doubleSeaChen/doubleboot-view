@@ -6,7 +6,11 @@
       <el-button size="mini" type="primary" icon="el-icon-search" @click="searchData"></el-button>
       <!--<el-button size="mini" type="primary" icon="el-icon-plus" style="margin-left:2px;"></el-button>-->
     </div>
-    <el-table id="exampleTalbe" :data="tableDatas" stripe>
+    <el-table id="exampleTalbe" :data="tableDatas" stripe
+              v-loading="loading"
+              element-loading-text="拼命加载中"
+              element-loading-spinner="el-icon-loading"
+              element-loading-background="rgba(0, 0, 0, 0.8)">
       <el-table-column prop="id" label="id" width="140" v-if="show">
       </el-table-column>
       <el-table-column prop="name" label="角色名" width="140">
@@ -99,6 +103,7 @@ export default {
       tableDatas: [],
       show: '',
       form: '',
+      loading: true,
       dialogAddFormVisible: false,
       dialogEditFormVisible: false,
       searchName: '',
@@ -154,6 +159,7 @@ export default {
         function (response) {
           _this.tableDatas = response.data.roleList
           _this.total = response.data.total
+          _this.loading = false
         }
       ).catch(function (respones) {
         _this.$message({

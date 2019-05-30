@@ -6,7 +6,12 @@
       <el-button size="mini" type="primary" icon="el-icon-search"></el-button>
       <el-button size="mini" type="primary" icon="el-icon-plus" style="margin-left:2px;"></el-button>
     </div>
-    <tree-table :data="data" :columns="columns" stripe @getAuth="getAuth">
+    <tree-table :data="data" :columns="columns" stripe
+                v-loading="loading"
+                element-loading-text="拼命加载中"
+                element-loading-spinner="el-icon-loading"
+                element-loading-background="rgba(0, 0, 0, 0.8)"
+                @getAuth="getAuth">
       <el-table-column label="" prop="object.text"></el-table-column>
       <el-table-column label="操作" width="250">
         <template slot-scope="scope">
@@ -76,6 +81,7 @@ export default {
         }
       ],
       data: [],
+      loading: true,
       dialogFormTop: false,
       isComponet: true,
       form: {
@@ -257,6 +263,7 @@ export default {
       let _this = this
       axios.get('/api/system/dept/listTree').then(function (response) {
         _this.data = response.data
+        _this.loading = false
       }).catch(function (response) {
         _this.$message({
           showClose: true,

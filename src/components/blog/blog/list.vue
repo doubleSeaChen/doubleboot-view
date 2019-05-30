@@ -8,7 +8,10 @@
           <!--<el-button size="mini" type="primary" icon="el-icon-plus" style="margin-left:2px;"></el-button>-->
       </div>
     </div>
-    <el-table id="exampleTalbe" :data="tableDatas" stripe>
+    <el-table id="exampleTalbe" :data="tableDatas" stripe v-loading="loading"
+              element-loading-text="拼命加载中"
+              element-loading-spinner="el-icon-loading"
+              element-loading-background="rgba(0, 0, 0, 0.8)">
       <el-table-column prop="id" label="id" width="140" v-if="show">
       </el-table-column>
       <el-table-column prop="title" label="标题" width="400">
@@ -85,6 +88,7 @@ export default {
       dialogFormVisible: false,
       dialogEditFormVisible: false,
       searchTitle: '',
+      loading: true,
       form: {
         title: '',
         author: '',
@@ -176,6 +180,7 @@ export default {
       axios.get('/api/blog/list', {params: params}).then(function (response) {
         _this.tableDatas = response.data.blogList
         _this.total = response.data.total
+        _this.loading = false
       }).catch(function (response) {
         _this.$message({
           showClose: true,

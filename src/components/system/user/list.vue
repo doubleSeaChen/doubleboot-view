@@ -5,10 +5,15 @@
       <div class="operationNavForm">
           <el-input v-model="searchUserName" class="searchInput" placeholder="用户名搜索" clearable></el-input>
           <el-button size="mini" type="primary" icon="el-icon-search" @click="searchData"></el-button>
-          &lt;!&ndash;<el-button size="mini" type="primary" icon="el-icon-plus" style="margin-left:2px;"></el-button>&ndash;&gt;
+          <el-button size="mini" type="primary" icon="el-icon-plus" style="margin-left:2px;"></el-button>
       </div>
     </div>
-    <el-table id="exampleTalbe" :data="tableDatas" stripe>
+    <el-table id="exampleTalbe"
+       v-loading="loading"
+       element-loading-text="拼命加载中"
+       element-loading-spinner="el-icon-loading"
+       element-loading-background="rgba(0, 0, 0, 0.8)"
+       :data="tableDatas" stripe>
       <el-table-column prop="id" label="id" width="140" v-if="show">
       </el-table-column>
       <el-table-column prop="userName" label="用户名" width="140">
@@ -33,7 +38,10 @@
       :total="total" style="margin-top:15px; text-align:right;">
     </el-pagination>
 
-    <el-dialog title="新增" :visible.sync="dialogFormVisible">
+    <el-dialog title="新增" :visible.sync="dialogFormVisible" v-loading="loading"
+               element-loading-text="拼命加载中"
+               element-loading-spinner="el-icon-loading"
+               element-loading-background="rgba(0, 0, 0, 0.8)">
       <el-form :model="form" :rules="addRules" ref="form">
         <el-form-item label="用户名" prop="userName" :label-width="formLabelWidth">
           <el-input v-model="form.userName" autocomplete="off"></el-input>
@@ -145,6 +153,7 @@ export default {
       roleList: [],
       roleUpdateList: [],
       roleUpdatePre: [],
+      loading: true,
       form: {
         userName: '',
         name: '',
@@ -219,6 +228,7 @@ export default {
       let _this = this
       _this.$refs[form].validate((valid) => {
         if (valid) {
+          _this.loading = true
           let sex = this.form.sex === 1 ? '男' : '女'
           let user = {
             userName: this.form.userName,
@@ -233,6 +243,7 @@ export default {
             user
           ).then(function (response) {
             if (response.data === 1) {
+              _this.loading = false
               _this.dialogFormVisible = false
               _this.$message({
                 showClose: true,
@@ -264,6 +275,7 @@ export default {
       axios.get('/api/user/list', {params: params}).then(function (response) {
         _this.tableDatas = response.data.userList
         _this.total = response.data.total
+        _this.loading = false
       }).catch(function (response) {
         _this.$message({
           showClose: true,

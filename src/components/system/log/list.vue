@@ -8,7 +8,10 @@
         <!--<el-button size="mini" type="primary" icon="el-icon-plus" style="margin-left:2px;"></el-button>-->
       </div>
     </div>
-    <el-table id="logTalbe" :data="tableDatas" stripe>
+    <el-table id="logTalbe" :data="tableDatas" stripe v-loading="loading"
+              element-loading-text="拼命加载中"
+              element-loading-spinner="el-icon-loading"
+              element-loading-background="rgba(0, 0, 0, 0.8)">
       <el-table-column prop="id" label="id" width="140" v-if="show">
       </el-table-column>
       <el-table-column prop="name" label="姓名" width="120">
@@ -45,6 +48,7 @@ export default {
         offset: 0,
         limit: 10
       },
+      loading: true,
       total: 0
     }
   },
@@ -64,6 +68,7 @@ export default {
       axios.get('/api/sys/log/list', {params: params}).then(function (response) {
         _this.tableDatas = response.data.logList
         _this.total = response.data.total
+        _this.loading = false
       }).catch(function (response) {
         console.log('前后端分离测试failed:' + response)
       })
