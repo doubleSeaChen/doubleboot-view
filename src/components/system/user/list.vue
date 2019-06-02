@@ -5,9 +5,18 @@
       <div class="operationNavForm">
           <el-input v-model="searchUserName" class="searchInput" placeholder="用户名搜索" clearable></el-input>
           <el-button size="mini" type="primary" icon="el-icon-search" @click="searchData"></el-button>
-          <el-button size="mini" type="primary" icon="el-icon-plus" style="margin-left:2px;"></el-button>
+          <el-button size="mini" type="primary" style="margin-left:2px;" @click="queryPanle = !queryPanle">更多...</el-button>
       </div>
     </div>
+    <transition name="expand">
+      <div v-if="queryPanle" style="clear: both;border: solid 1px #5454;">
+        <el-form :model="queryForm" class="queryForm">
+          <span class="querySpan">部门</span><input class="queryInput" v-model="queryForm.userName"/>
+          <span class="querySpan">用户名</span><input class="queryInput" v-model="queryForm.userName"/>
+          <span class="querySpan">姓名</span><input class="queryInput" v-model="queryForm.name"/>
+        </el-form>
+      </div>
+    </transition>
     <el-table id="exampleTalbe" v-loading="loading"
               element-loading-text="拼命加载中"
               element-loading-spinner="el-icon-loading"
@@ -147,6 +156,11 @@ export default {
       roleUpdatePre: [],
       loading: true,
       saveBtn: false,
+      queryPanle: false,
+      queryForm: {
+        userName: '',
+        name: ''
+      },
       form: {
         userName: '',
         name: '',
@@ -403,6 +417,24 @@ export default {
   }
   .operationNav{
     /*height:40px;line-height:40px;*/
+  }
+  .queryInput {
+    height: 28px;
+    width: 150px;
+    border-radius: 3px;
+    padding: 0 5px;
+    margin-left: 2px;
+    border: 1px solid #ccc;
+  }
+  .queryForm {
+    text-align: left;
+    padding: 4px 0px;
+    font-size: 14px;
+    color: #1d1d1f;
+    padding-left: 9px;
+  }
+  .querySpan {
+    padding-left: 20px;
   }
 </style>
 <style>
