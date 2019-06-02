@@ -51,8 +51,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="dialogFormVisible = false">取 消</el-button>
-        <el-button size="mini" type="primary" v-on:click="addNotice('form')">确 定</el-button>
+        <el-button size="mini" @click="dialogFormVisible = false" :disabled="saveBtn">取 消</el-button>
+        <el-button size="mini" type="primary" v-on:click="addNotice('form')" :disabled="saveBtn">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -72,8 +72,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="dialogFormVisible = false">取 消</el-button>
-        <el-button size="mini" type="primary" v-on:click="editNotice('editForm')" >确 定</el-button>
+        <el-button size="mini" @click="dialogFormVisible = false" :disabled="saveBtn">取 消</el-button>
+        <el-button size="mini" type="primary" v-on:click="editNotice('editForm')" :disabled="saveBtn">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -91,6 +91,7 @@ export default {
       dialogEditFormVisible: false,
       searchTitle: '',
       loading: true,
+      saveBtn: false,
       form: {
         title: '',
         type: '',
@@ -136,6 +137,7 @@ export default {
       let _this = this
       _this.$refs[form].validate((valid) => {
         if (valid) {
+          this.saveBtn = true
           let notice = {
             title: this.form.title,
             type: this.form.type,
@@ -203,12 +205,14 @@ export default {
     },
     showAddNotice: function () {
       let _this = this
+      _this.saveBtn = false
       _this.dialogFormVisible = true
     },
     editNotice: function (editForm) {
       let _this = this
       _this.$refs[editForm].validate((valid) => {
         if (valid) {
+          this.saveBtn = true
           let notice = {
             id: this.editForm.id,
             title: this.editForm.title,
@@ -242,19 +246,7 @@ export default {
       })
     },
     showEditDialog: function (index, row) {
-      /* let _this = this
-      axios.get('/api/role/listAll').then(function (response) {
-        _this.roleUpdatePre = response.data
-        _this.$nextTick(function () {
-          axios.post('/api/role/listByUserId/' + row.id).then(function (response) {
-            _this.roleUpdateList = []
-            for (var i = 0; i < response.data.length; i++) {
-              _this.roleUpdateList.push(response.data[i].roleId)
-            }
-          }).catch(function (response) {
-          })
-        })
-      }) */
+      this.saveBtn = false
       this.dialogEditFormVisible = true
       this.editForm = Object.assign({}, row)
     },

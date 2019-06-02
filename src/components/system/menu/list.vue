@@ -50,8 +50,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="dialogFormTop = false">取 消</el-button>
-        <el-button size="mini" type="primary" v-on:click="addMenu('form')">确 定</el-button>
+        <el-button size="mini" @click="dialogFormTop = false" :disabled="saveBtn">取 消</el-button>
+        <el-button size="mini" type="primary" v-on:click="addMenu('form')" :disabled="saveBtn">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -81,8 +81,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="dialogFormEdit = false">取 消</el-button>
-        <el-button size="mini" type="primary" v-on:click="editMenu('editForm')">确 定</el-button>
+        <el-button size="mini" @click="dialogFormEdit = false" :disabled="saveBtn">取 消</el-button>
+        <el-button size="mini" type="primary" v-on:click="editMenu('editForm')" :disabled="saveBtn">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -123,6 +123,7 @@ export default {
       dialogForm: false,
       isComponet: true,
       loading: true,
+      saveBtn: false,
       form: {
         name: '',
         component: '',
@@ -201,6 +202,7 @@ export default {
       let _this = this
       _this.$refs[form].validate((valid) => {
         if (valid) {
+          this.saveBtn = true
           let menu = {
             name: this.form.name,
             sign: this.form.sign,
@@ -240,6 +242,7 @@ export default {
       })
     },
     showAddDialog: function (isTop, name, id) {
+      this.saveBtn = false
       if (isTop === '1') {
         this.form.parentName = '顶级菜单'
         this.form.parentId = 0
@@ -254,6 +257,7 @@ export default {
       this.dialogFormTop = true
     },
     showEditDialog: function (index, row) {
+      this.saveBtn = false
       this.dialogFormEdit = true
       this.editForm = Object.assign({}, row.object)
     },
@@ -261,6 +265,7 @@ export default {
       let _this = this
       _this.$refs[editForm].validate((valid) => {
         if (valid) {
+          _this.saveBtn = true
           let menu = {
             id: this.editForm.id,
             name: this.editForm.name,

@@ -8,11 +8,10 @@
           <el-button size="mini" type="primary" icon="el-icon-plus" style="margin-left:2px;"></el-button>
       </div>
     </div>
-    <el-table id="exampleTalbe"
-       v-loading="loading"
-       element-loading-text="拼命加载中"
-       element-loading-spinner="el-icon-loading"
-       element-loading-background="rgba(0, 0, 0, 0.8)"
+    <el-table id="exampleTalbe" v-loading="loading"
+              element-loading-text="拼命加载中"
+              element-loading-spinner="el-icon-loading"
+              element-loading-background="rgba(0, 0, 0, 0.8)"
        :data="tableDatas" stripe>
       <el-table-column prop="id" label="id" width="140" v-if="show">
       </el-table-column>
@@ -38,10 +37,7 @@
       :total="total" style="margin-top:15px; text-align:right;">
     </el-pagination>
 
-    <el-dialog title="新增" :visible.sync="dialogFormVisible" v-loading="loading"
-               element-loading-text="拼命加载中"
-               element-loading-spinner="el-icon-loading"
-               element-loading-background="rgba(0, 0, 0, 0.8)">
+    <el-dialog title="新增" :visible.sync="dialogFormVisible">
       <el-form :model="form" :rules="addRules" ref="form">
         <el-form-item label="用户名" prop="userName" :label-width="formLabelWidth">
           <el-input v-model="form.userName" autocomplete="off"></el-input>
@@ -71,8 +67,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="dialogFormVisible = false">取 消</el-button>
-        <el-button size="mini" type="primary" v-on:click="addUser('form')">确 定</el-button>
+        <el-button size="mini" @click="dialogFormVisible = false" :disabled="saveBtn">取 消</el-button>
+        <el-button size="mini" type="primary" v-on:click="addUser('form')" :disabled="saveBtn">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -100,8 +96,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="dialogFormVisible = false">取 消</el-button>
-        <el-button size="mini" type="primary" v-on:click="editUser('editForm')" >确 定</el-button>
+        <el-button size="mini" @click="dialogFormVisible = false" :disabled="saveBtn">取 消</el-button>
+        <el-button size="mini" type="primary" v-on:click="editUser('editForm')" :disabled="saveBtn">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -109,11 +105,6 @@
 
 <script>
 import axios from 'axios'
-import 'element-ui/lib/theme-chalk/base.css'
-// collapse 展开折叠
-import CollapseTransition from 'element-ui/lib/transitions/collapse-transition'
-import Vue from 'vue'
-Vue.component(CollapseTransition.name, CollapseTransition)
 let checkPhone = (rule, value, callback) => {
   const phoneReg = /^1[3|4|5|7|8][0-9]{9}$/
   if (!value) {
@@ -140,6 +131,7 @@ let checkEmail = (rule, value, callback) => {
     }
   }, 100)
 }
+
 export default {
   name: 'userTable',
   data: function () {
@@ -154,6 +146,7 @@ export default {
       roleUpdateList: [],
       roleUpdatePre: [],
       loading: true,
+      saveBtn: false,
       form: {
         userName: '',
         name: '',
@@ -216,7 +209,6 @@ export default {
       }
     }
   },
-  waitForData: true,
   mounted: function () {
     this.$nextTick(function () {
       console.log('页面初始化完成请求数据')
@@ -228,7 +220,7 @@ export default {
       let _this = this
       _this.$refs[form].validate((valid) => {
         if (valid) {
-          _this.loading = true
+          this.saveBtn = true
           let sex = this.form.sex === 1 ? '男' : '女'
           let user = {
             userName: this.form.userName,
@@ -243,7 +235,6 @@ export default {
             user
           ).then(function (response) {
             if (response.data === 1) {
-              _this.loading = false
               _this.dialogFormVisible = false
               _this.$message({
                 showClose: true,
@@ -302,6 +293,7 @@ export default {
     },
     showAddUser: function () {
       let _this = this
+      this.saveBtn = false
       axios.get('/api/role/listAll').then(function (response) {
         _this.roles = response.data
       }
@@ -314,6 +306,7 @@ export default {
       let _this = this
       _this.$refs[editForm].validate((valid) => {
         if (valid) {
+          this.saveBtn = true
           let user = {
             id: this.editForm.id,
             userName: this.editForm.userName,
@@ -351,6 +344,7 @@ export default {
     },
     showEditDialog: function (index, row) {
       let _this = this
+      this.saveBtn = false
       axios.get('/api/role/listAll').then(function (response) {
         _this.roleUpdatePre = response.data
         _this.$nextTick(function () {

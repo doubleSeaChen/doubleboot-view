@@ -57,8 +57,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="dialogFormVisible = false">取 消</el-button>
-        <el-button size="mini" type="primary" v-on:click="addRole('addForm')">确 定</el-button>
+        <el-button size="mini" @click="dialogFormVisible = false" :disabled="saveBtn">取 消</el-button>
+        <el-button size="mini" type="primary" v-on:click="addRole('addForm')" :disabled="saveBtn">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -87,8 +87,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="dialogFormVisible = false">取 消</el-button>
-        <el-button size="mini" type="primary" v-on:click="editRole('editForm')">确 定</el-button>
+        <el-button size="mini" @click="dialogFormVisible = false" :disabled="saveBtn">取 消</el-button>
+        <el-button size="mini" type="primary" v-on:click="editRole('editForm')" :disabled="saveBtn">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -107,6 +107,7 @@ export default {
       dialogAddFormVisible: false,
       dialogEditFormVisible: false,
       searchName: '',
+      saveBtn: false,
       addForm: {
         name: '',
         sign: '',
@@ -189,6 +190,7 @@ export default {
       let _this = this
       _this.$refs[addForm].validate((valid) => {
         if (valid) {
+          this.saveBtn = true
           let dataRecieve = _this.$refs.roleAddTree.getCheckedKeys().concat(this.$refs.roleAddTree.getHalfCheckedKeys())
           let role = {
             name: this.addForm.name,
@@ -199,6 +201,7 @@ export default {
           axios.post('/api/role/save', role).then(
             function (response) {
               if (response.data === 1) {
+                _this.saveBtn = false
                 _this.dialogAddFormVisible = false
                 _this.$message({
                   showClose: true,
@@ -207,6 +210,7 @@ export default {
                 })
                 _this.getData(_this.params)
               } else {
+                _this.saveBtn = false
                 _this.dialogAddFormVisible = false
                 this.$message({
                   showClose: true,
@@ -231,7 +235,7 @@ export default {
       let _this = this
       this.dialogEditFormVisible = true
       this.editForm = Object.assign({}, row)
-
+      this.saveBtn = false
       axios.get('/api/menu/treeList').then(function (response) {
         _this.menuData = response.data
         _this.$nextTick(function () {
@@ -251,6 +255,7 @@ export default {
       let _this = this
       _this.$refs[editForm].validate((valid) => {
         if (valid) {
+          this.saveBtn = true
           let dataRecieve = _this.$refs.roleAddTree.getCheckedKeys().concat(this.$refs.roleAddTree.getHalfCheckedKeys())
           let role = {
             id: this.editForm.id,
