@@ -72,4 +72,22 @@ export default {
   color: #f9f9f9;
   margin-right: 4px;
 }
+.queryInput {
+  height: 28px;
+  width: 150px;
+  border-radius: 3px;
+  padding: 0 5px;
+  margin-left: 2px;
+  border: 1px solid #ccc;
+}
+.queryForm {
+  text-align: left;
+  padding: 4px 0px;
+  font-size: 14px;
+  color: #1d1d1f;
+  padding-left: 9px;
+}
+.querySpan {
+  padding-left: 20px;
+}
 </style>

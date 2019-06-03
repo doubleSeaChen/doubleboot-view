@@ -4,7 +4,6 @@
     <div class="operationNavForm">
       <el-input class="searchInput" placeholder="搜索" clearable></el-input>
       <el-button size="mini" type="primary" icon="el-icon-search"></el-button>
-      <el-button size="mini" type="primary" icon="el-icon-plus" style="margin-left:2px;"></el-button>
     </div>
     <tree-table :data="data" :columns="columns" stripe
                 v-loading="loading"

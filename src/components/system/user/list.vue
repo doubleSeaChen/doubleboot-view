@@ -14,6 +14,7 @@
           <span class="querySpan">部门</span><input class="queryInput" v-model="queryForm.userName"/>
           <span class="querySpan">用户名</span><input class="queryInput" v-model="queryForm.userName"/>
           <span class="querySpan">姓名</span><input class="queryInput" v-model="queryForm.name"/>
+          <el-button style="padding-top:8px;" size="mini" type="primary" >查询</el-button>
         </el-form>
       </div>
     </transition>
@@ -414,27 +415,6 @@ export default {
 <style scoped>
   #exampleTalbe{
     text-align: left;
-  }
-  .operationNav{
-    /*height:40px;line-height:40px;*/
-  }
-  .queryInput {
-    height: 28px;
-    width: 150px;
-    border-radius: 3px;
-    padding: 0 5px;
-    margin-left: 2px;
-    border: 1px solid #ccc;
-  }
-  .queryForm {
-    text-align: left;
-    padding: 4px 0px;
-    font-size: 14px;
-    color: #1d1d1f;
-    padding-left: 9px;
-  }
-  .querySpan {
-    padding-left: 20px;
   }
 </style>
 <style>
