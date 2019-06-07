@@ -47,7 +47,7 @@
       :total="total" style="margin-top:15px; text-align:right;">
     </el-pagination>
 
-    <el-dialog title="新增" :visible.sync="dialogFormVisible">
+    <el-dialog title="新增" :visible.sync="dialogFormVisible" width="60%" top="4%">
       <el-form :model="form" :rules="addRules" ref="form">
         <el-form-item label="用户名" prop="userName" :label-width="formLabelWidth">
           <el-input v-model="form.userName" autocomplete="off"></el-input>

@@ -5,20 +5,8 @@
       <div class="operationNavForm" style="margin-bottom:5px;">
         <el-input v-model="searchUserName" class="searchInput" placeholder="用户名搜索" clearable></el-input>
         <el-button size="mini" type="primary" icon="el-icon-search" @click="searchData"></el-button>
-        <el-button size="mini" type="primary" style="margin-left:2px;" @click="queryPanle = !queryPanle">更多...</el-button>
       </div>
     </div>
-    <transition name="expand">
-      <div v-if="queryPanle" style="clear: both;border: solid 1px #5454;">
-        <el-form :model="queryForm" class="queryForm">
-          <span class="querySpan">用户名</span><input class="queryInput" v-model="queryForm.userName"/>
-          <span class="querySpan">访问时间</span><el-date-picker class="queryDateTime" style="height:31px;vertical-align:middle;line-height:31px;"
-          v-model="queryForm.dateTime" type="daterange" unlink-panels range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-        </el-date-picker>
-          <el-button style="padding-top:8px;" size="mini" type="primary" >查询</el-button>
-        </el-form>
-      </div>
-    </transition>
     <el-table id="logTalbe" :data="tableDatas" stripe v-loading="loading"
               element-loading-text="拼命加载中"
               element-loading-spinner="el-icon-loading"
@@ -61,7 +49,6 @@ export default {
       },
       loading: true,
       total: 0,
-      queryPanle: false,
       queryForm: {
         userName: '',
         dateTime: ''
@@ -112,14 +99,5 @@ export default {
 <style scoped>
   #logTalbe{
     text-align: left;
-  }
-  /*.el-date-editor .el-range__icon {
-    line-height: 20px!important;
-  }*/
-  .queryDateTime i{
-    line-height: 20px;
-  }
-  .el-date-editor .el-range-separator {
-    padding-bottom: 9px!important;
   }
 </style>

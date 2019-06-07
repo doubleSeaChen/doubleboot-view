@@ -35,7 +35,7 @@
       layout="total, prev, pager, next, jumper"
       :total="total" style="margin-top:15px; text-align:right;">
     </el-pagination>
-    <el-dialog title="新增" :visible.sync="dialogAddFormVisible">
+    <el-dialog title="新增" :visible.sync="dialogAddFormVisible" width="60%"  top="4%">
       <el-form :model="addForm" :rules="addRules" ref="addForm">
         <el-form-item label="角色名" prop="name" :label-width="formLabelWidth">
           <el-input v-model="addForm.name" autocomplete="off"></el-input>

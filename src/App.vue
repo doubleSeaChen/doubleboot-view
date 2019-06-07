@@ -90,4 +90,8 @@ export default {
 .querySpan {
   padding-left: 20px;
 }
+.el-dialog__body {
+  height: 400px!important;
+  overflow-y: auto!important;
+}
 </style>
