@@ -56,7 +56,7 @@
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password" :label-width="formLabelWidth">
-          <el-input v-model="form.password" autocomplete="off"></el-input>
+          <el-input v-model="form.password" autocomplete="off" type="password"></el-input>
         </el-form-item>
         <el-form-item label="性别" prop="sex" :label-width="formLabelWidth">
           <el-radio-group v-model="form.sex" autocomplete="off" style="float:left;margin-top:10px;">
@@ -70,12 +70,27 @@
         <el-form-item label="联系电话" prop="phone" :label-width="formLabelWidth">
           <el-input v-model="form.phone" autocomplete="off"></el-input>
         </el-form-item>
+        <el-form-item label="部门" prop="dept" :label-width="formLabelWidth" >
+          <el-input v-model="form.deptName" autocomplete="off" @click.native="getDeptTree" :disabled="true"></el-input>
+          <el-input v-model="form.deptId" :disabled="true" type="hidden"></el-input>
+        </el-form-item>
         <el-form-item label="用户角色" prop="roleList" :label-width="formLabelWidth">
           <el-checkbox-group style="text-align:left;" v-model="roleList">
             <el-checkbox :index="item.id" v-for="item in roles" :key="item.id" :label="item.id">{{item.name}}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
       </el-form>
+      <el-dialog
+        width="30%"
+        title="部门"
+        :visible.sync="innerVisible"
+        append-to-body>
+        <el-tree
+          :data="deptData"
+          node-key="id"
+          :props="defaultProps" @node-click="handleNodeClick">
+        </el-tree>
+      </el-dialog>
       <div slot="footer" class="dialog-footer">
         <el-button size="mini" @click="dialogFormVisible = false" :disabled="saveBtn">取 消</el-button>
         <el-button size="mini" type="primary" v-on:click="addUser('form')" :disabled="saveBtn">确 定</el-button>
@@ -147,6 +162,11 @@ export default {
   data: function () {
     return {
       tableDatas: [],
+      deptData: [],
+      defaultProps: {
+        children: 'children',
+        label: 'text'
+      },
       dialogFormVisible: false,
       dialogEditFormVisible: false,
       roles: '',
@@ -155,6 +175,8 @@ export default {
       roleList: [],
       roleUpdateList: [],
       roleUpdatePre: [],
+      outerVisible: false,
+      innerVisible: false,
       loading: true,
       saveBtn: false,
       queryPanle: false,
@@ -168,7 +190,9 @@ export default {
         password: '',
         sex: '',
         email: '',
-        phone: ''
+        phone: '',
+        deptName: '',
+        deptId: ''
       },
       editForm: {
         id: '',
@@ -226,11 +250,28 @@ export default {
   },
   mounted: function () {
     this.$nextTick(function () {
-      console.log('页面初始化完成请求数据')
       this.getData(this.params)
     })
   },
   methods: {
+    handleNodeClick (data) {
+      console.log(data.id + ',,' + data.text)
+      let _this = this
+      _this.form.deptName = data.text
+      _this.form.deptId = data.id
+      _this.innerVisible = false
+    },
+    getDeptTree: function () {
+      let _this = this
+      _this.innerVisible = true
+      axios.get('/api/system/dept/listTree').then(
+        function (response) {
+          _this.deptData = response.data
+        }
+      ).catch(function (respones) {
+        console.log('请求菜单列表数据失败')
+      })
+    },
     addUser (form) {
       let _this = this
       _this.$refs[form].validate((valid) => {
@@ -244,7 +285,8 @@ export default {
             email: this.form.email,
             phone: this.form.phone,
             roleIds: this.roleList,
-            sex: sex
+            sex: sex,
+            deptId: this.form.deptId
           }
           axios.post('/api/user/save',
             user
