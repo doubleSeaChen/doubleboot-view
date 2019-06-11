@@ -38,7 +38,7 @@
       :total="total" style="margin-top:15px; text-align:right;">
     </el-pagination>
 
-    <el-dialog title="新增" :visible.sync="dialogFormVisible">
+    <el-dialog title="新增" :visible.sync="dialogFormVisible" width="60%">
       <el-form :model="form" :rules="addRules" ref="form">
         <el-form-item label="标题" prop="title" :label-width="formLabelWidth">
           <el-input v-model="form.title" autocomplete="off"></el-input>
@@ -49,7 +49,39 @@
         <el-form-item label="内容" prop="content" :label-width="formLabelWidth">
           <el-input v-model="form.content" autocomplete="off"></el-input>
         </el-form-item>
+        <el-form-item label="通知人" prop="dept" :label-width="formLabelWidth" >
+          <el-input v-model="form.userName" autocomplete="off" @click.native="getUsers" :disabled="true"></el-input>
+          <el-input v-model="form.userId" :disabled="true" type="hidden"></el-input>
+        </el-form-item>
       </el-form>
+      <el-dialog
+        width="40%"
+        title="接收人"
+        :visible.sync="innerVisible"
+        append-to-body>
+        <div>
+          <el-table id="exampleTalbe" v-loading="loading"
+                    element-loading-text="拼命加载中"
+                    element-loading-spinner="el-icon-loading"
+                    element-loading-background="rgba(0, 0, 0, 0.8)"
+                    :data="userDatas" stripe>
+            <el-table-column type="selection" width="55"></el-table-column>
+            <el-table-column prop="id" label="id" min-width="140" v-if="show">
+            </el-table-column>
+            <el-table-column prop="userName" label="用户名" min-width="140">
+            </el-table-column>
+            <el-table-column prop="name" label="姓名" min-width="120">
+            </el-table-column>
+          </el-table>
+        </div>
+        <el-pagination
+          @current-change="handleCurrentChange"
+          :current-page="1"
+          :page-size="10"
+          layout="total, prev, pager, next, jumper"
+          :total="userTotal" style="margin-top:15px; text-align:right;">
+        </el-pagination>
+      </el-dialog>
       <div slot="footer" class="dialog-footer">
         <el-button size="mini" @click="dialogFormVisible = false" :disabled="saveBtn">取 消</el-button>
         <el-button size="mini" type="primary" v-on:click="addNotice('form')" :disabled="saveBtn">确 定</el-button>
@@ -87,10 +119,17 @@ export default {
   data: function () {
     return {
       tableDatas: [],
+      userDatas: [],
+      userTotal: 0,
       dialogFormVisible: false,
       dialogEditFormVisible: false,
+      innerVisible: false,
       searchTitle: '',
       loading: true,
+      userParams: {
+        offset: 0,
+        limit: 10
+      },
       saveBtn: false,
       form: {
         title: '',
@@ -133,6 +172,24 @@ export default {
     })
   },
   methods: {
+    getUsers: function () {
+      this.innerVisible = true
+      this.getUserData(this.userParams)
+    },
+    getUserData: function (params) {
+      let _this = this
+      axios.get('/api/user/list', {params: params}).then(function (response) {
+        _this.userDatas = response.data.userList
+        _this.userTotal = response.data.total
+        _this.loading = false
+      }).catch(function (response) {
+        _this.$message({
+          showClose: true,
+          message: '请求数据失败，请联系管理员...',
+          type: 'error'
+        })
+      })
+    },
     addNotice (form) {
       let _this = this
       _this.$refs[form].validate((valid) => {

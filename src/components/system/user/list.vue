@@ -114,12 +114,27 @@
         <el-form-item label="联系电话" prop="phone" :label-width="formLabelWidth">
           <el-input v-model="editForm.phone" autocomplete="off"></el-input>
         </el-form-item>
+        <el-form-item label="部门" prop="dept" :label-width="formLabelWidth" >
+          <el-input v-model="editForm.deptName" autocomplete="off" @click.native="getDeptTree" :disabled="true"></el-input>
+          <el-input v-model="editForm.deptId" :disabled="true" type="hidden"></el-input>
+        </el-form-item>
         <el-form-item label="用户角色" :label-width="formLabelWidth">
           <el-checkbox-group style="text-align:left;" v-model="roleUpdateList">
             <el-checkbox :index="item.id" v-for="item in roleUpdatePre" :key="item.id" :label="item.id">{{item.name}}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
       </el-form>
+      <el-dialog
+        width="30%"
+        title="部门"
+        :visible.sync="innerVisible"
+        append-to-body>
+        <el-tree
+          :data="deptData"
+          node-key="id"
+          :props="defaultProps" @node-click="handleNodeClick">
+        </el-tree>
+      </el-dialog>
       <div slot="footer" class="dialog-footer">
         <el-button size="mini" @click="dialogFormVisible = false" :disabled="saveBtn">取 消</el-button>
         <el-button size="mini" type="primary" v-on:click="editUser('editForm')" :disabled="saveBtn">确 定</el-button>
@@ -199,7 +214,9 @@ export default {
         userName: '',
         name: '',
         password: '',
-        sex: ''
+        sex: '',
+        deptName: '',
+        deptId: ''
       },
       formLabelWidth: '120px',
       show: '',
@@ -255,10 +272,11 @@ export default {
   },
   methods: {
     handleNodeClick (data) {
-      console.log(data.id + ',,' + data.text)
       let _this = this
       _this.form.deptName = data.text
       _this.form.deptId = data.id
+      _this.editForm.deptName = data.text
+      _this.editForm.deptId = data.id
       _this.innerVisible = false
     },
     getDeptTree: function () {
@@ -400,6 +418,7 @@ export default {
       })
     },
     showEditDialog: function (index, row) {
+      debugger
       let _this = this
       this.saveBtn = false
       axios.get('/api/role/listAll').then(function (response) {
