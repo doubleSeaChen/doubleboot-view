@@ -61,11 +61,10 @@
         append-to-body>
         <div>
           <el-table id="exampleTalbe" v-loading="loading"
-                    element-loading-text="拼命加载中"
-                    element-loading-spinner="el-icon-loading"
-                    element-loading-background="rgba(0, 0, 0, 0.8)"
-                    :data="userDatas" stripe>
-            <el-table-column type="selection" width="55"></el-table-column>
+                    element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading"
+                    element-loading-background="rgba(0, 0, 0, 0.8)" :data="userDatas" stripe :row-key="getRowKey"
+                    ref=multipleTable @selection-change="handleSelectionChange">
+            <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
             <el-table-column prop="id" label="id" min-width="140" v-if="show">
             </el-table-column>
             <el-table-column prop="userName" label="用户名" min-width="140">
@@ -75,12 +74,16 @@
           </el-table>
         </div>
         <el-pagination
-          @current-change="handleCurrentChange"
+          @current-change="handleCurrentChangeUser"
           :current-page="1"
           :page-size="10"
           layout="total, prev, pager, next, jumper"
           :total="userTotal" style="margin-top:15px; text-align:right;">
         </el-pagination>
+        <div slot="footer" class="dialog-footer">
+          <el-button size="mini" @click="innerVisible = false">取 消</el-button>
+          <el-button size="mini" type="primary" v-on:click="addUser">确 定</el-button>
+        </div>
       </el-dialog>
       <div slot="footer" class="dialog-footer">
         <el-button size="mini" @click="dialogFormVisible = false" :disabled="saveBtn">取 消</el-button>
@@ -124,6 +127,7 @@ export default {
       dialogFormVisible: false,
       dialogEditFormVisible: false,
       innerVisible: false,
+      reserverData: true,
       searchTitle: '',
       loading: true,
       userParams: {
@@ -134,7 +138,8 @@ export default {
       form: {
         title: '',
         type: '',
-        content: ''
+        content: '',
+        userIds: ''
       },
       editForm: {
         title: '',
@@ -163,7 +168,8 @@ export default {
         content: [
           {required: true, message: '请输入内容', trigger: 'blur'}
         ]
-      }
+      },
+      multipleSelection: []
     }
   },
   mounted: function () {
@@ -172,6 +178,34 @@ export default {
     })
   },
   methods: {
+    addUser: function () {
+      this.multipleSelection = this.$refs.multipleTable.selection
+      let userNames = ''
+      let userIds = ''
+      /* this.multipleSelection.forEach(s => {
+        userNames += s.userName + ','
+        userIds += s.id + ','
+      }) */
+      /* eslint-disable */
+      for(let i=0; i<this.multipleSelection.length; i++){
+        if(i < this.multipleSelection.length-1){
+          userNames += this.multipleSelection[i].userName + ','
+          userIds += this.multipleSelection[i].id + ','
+        } else {
+          userNames += this.multipleSelection[i].userName
+          userIds += this.multipleSelection[i].id
+        }
+      }
+      this.form.userName = userNames
+      this.form.userId = userIds
+      this.innerVisible = false
+    },
+    getRowKey (row) {
+      return row.id
+    },
+    handleSelectionChange (val) {
+      this.multipleSelection = val
+    },
     getUsers: function () {
       this.innerVisible = true
       this.getUserData(this.userParams)
@@ -198,7 +232,8 @@ export default {
           let notice = {
             title: this.form.title,
             type: this.form.type,
-            content: this.form.content
+            content: this.form.content,
+            userIds: this.form.userId.split(',')
           }
           axios.post('/api/notice/notice/save',
             notice
@@ -229,6 +264,11 @@ export default {
       this.params.offset = 10 * (val - 1)
       this.params.limit = 10
       this.getData(this.params)
+    },
+    handleCurrentChangeUser (val) {
+      this.params.offset = 10 * (val - 1)
+      this.params.limit = 10
+      this.getUserData(this.params)
     },
     getData: function (params) {
       let _this = this
