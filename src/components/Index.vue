@@ -19,6 +19,14 @@
 
     <el-container>
       <el-header style="height:50px;text-align:right;background-color:#545C64;line-height:50px;">
+        <el-dropdown trigger="click"  @command="showNotice">
+          <el-badge :value="noticeCount" class="item">
+            <i style="color:#f9f4f4;font-size:20px;margin-right:25px;" class="fa fa-envelope-o" aria-hidden="true"></i>
+          </el-badge>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item :index="item.id" v-for="item in notice" :key="item.id" :command="item.id">{{item.title}}</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
         <el-popover
           placement="bottom"
           width="100"
@@ -42,7 +50,25 @@
         <router-view></router-view>
       </el-main>
     </el-container>
+    <el-dialog title="通知" :visible.sync="dialogFormVisible" width="60%" top="4%">
+      <el-form :model="noticeDetials">
+        <el-form-item label="ID" :label-width="formLabelWidth" v-show="false">
+          <el-input v-model="noticeDetials.id" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="标题" :label-width="formLabelWidth">
+          <el-input v-model="noticeDetials.title" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="内容" :label-width="formLabelWidth">
+          <el-input type="textarea" v-model="noticeDetials.content"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="dialogFormVisible = false">关 闭</el-button>
+        <el-button size="mini" type="primary" v-on:click="readNotice" >已 读</el-button>
+      </div>
+    </el-dialog>
   </el-container>
+
 </template>
 
 <script>
@@ -101,6 +127,37 @@ export default {
     },
     handleClick (tab, event) {
       router.push({path: tab.name})
+    },
+    getNotice () {
+      let _this = this
+      axios.get('/api/notice/record/getUserNotice').then(function (response) {
+        _this.notice = response.data
+        _this.noticeCount = response.data.length
+      }).catch(function (response) {
+
+      })
+    },
+    showNotice (command) {
+      let _this = this
+      axios.post('/api/notice/record/getUserNoticeById/' + command
+      ).then(function (response) {
+        _this.noticeDetials.id = command
+        _this.noticeDetials.title = response.data.title
+        _this.noticeDetials.content = response.data.content
+      }).catch(function (response) {
+      })
+      _this.dialogFormVisible = true
+    },
+    readNotice () {
+      let _this = this
+      axios.post('/api/notice/record/setRead/' + _this.noticeDetials.id).then(function (response) {
+        if (response.data === 1) {
+          _this.dialogFormVisible = false
+          _this.getNotice()
+        } else {
+        }
+      }).catch(function (response) {
+      })
     }
   },
   mounted: function () {
@@ -110,6 +167,7 @@ export default {
       _this.imgUrl = '/api' + JSON.parse(localStorage.getItem('user')).headPath
       _this.$refs.imgBtn.style.cssText = 'border:saddlebrown;vertical-align:middle;width:40px;height:40px;' +
         'background-size:cover;border-radius:50%;margin-right:15px;' + ' background-image: url(' + _this.imgUrl + ');'
+      _this.getNotice()
     })
   },
   data: function () {
@@ -118,14 +176,23 @@ export default {
       item: '',
       menu: '',
       imgUrl: '',
+      noticeCount: 0,
       editableTabsValue: '2',
+      notice: [],
       editableTabs: [{
         title: '首页',
         name: '1',
         content: 'Tab 1 content',
         path: '/demos'
       }],
-      tabIndex: 2
+      tabIndex: 2,
+      dialogFormVisible: false,
+      formLabelWidth: '120px',
+      noticeDetials: {
+        id: '',
+        title: '',
+        content: ''
+      }
     }
   }
 }
@@ -143,5 +210,16 @@ export default {
   }
   .el-submenu .el-menu-item {
     min-width: 150px;
+  }
+</style>
+
+<style>
+  .el-badge__content.is-fixed {
+    top: 14px;
+    right: 28px;
+  }
+  .el-badge__content {
+    background-color: #f56c6c;
+    border: 0;
   }
 </style>

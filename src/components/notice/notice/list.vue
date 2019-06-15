@@ -16,8 +16,6 @@
       </el-table-column>
       <el-table-column prop="title" label="标题" width="140">
       </el-table-column>
-      <el-table-column prop="type" label="类型" width="120">
-      </el-table-column>
       <el-table-column prop="content" label="内容">
       </el-table-column>
       <el-table-column prop="createDate" label="创建时间">
@@ -43,11 +41,8 @@
         <el-form-item label="标题" prop="title" :label-width="formLabelWidth">
           <el-input v-model="form.title" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="类型" prop="type" :label-width="formLabelWidth">
-          <el-input v-model="form.type" autocomplete="off"></el-input>
-        </el-form-item>
         <el-form-item label="内容" prop="content" :label-width="formLabelWidth">
-          <el-input v-model="form.content" autocomplete="off"></el-input>
+          <el-input type="textarea" v-model="form.content"></el-input>
         </el-form-item>
         <el-form-item label="通知人" prop="dept" :label-width="formLabelWidth" >
           <el-input v-model="form.userName" autocomplete="off" @click.native="getUsers" :disabled="true"></el-input>
@@ -137,7 +132,6 @@ export default {
       saveBtn: false,
       form: {
         title: '',
-        type: '',
         content: '',
         userIds: ''
       },
@@ -231,7 +225,6 @@ export default {
           this.saveBtn = true
           let notice = {
             title: this.form.title,
-            type: this.form.type,
             content: this.form.content,
             userIds: this.form.userId.split(',')
           }

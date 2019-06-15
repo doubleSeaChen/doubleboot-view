@@ -418,7 +418,6 @@ export default {
       })
     },
     showEditDialog: function (index, row) {
-      debugger
       let _this = this
       this.saveBtn = false
       axios.get('/api/role/listAll').then(function (response) {
