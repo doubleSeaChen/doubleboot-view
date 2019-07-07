@@ -5,7 +5,7 @@
       <div style="height:60px;width:150px;background-color:#545c64;line-height:60px;text-align:center;">
         <a style="color:white;font-size:23px;">DoubleBoot</a>
       </div>
-      <el-menu :default-openeds="['1', '3']" router background-color="#545c64"
+      <el-menu router background-color="#545c64"
         text-color="#fff"
         active-text-color="#ffd04b" style="width:150px;">
         <el-submenu :index="item.text" v-for="item in menu" :key="item.text">
