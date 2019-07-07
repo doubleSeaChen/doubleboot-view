@@ -39,10 +39,10 @@ export default {
     },
     // 当上传图片后，调用onchange方法，获取图片本地路径
     onchange (file, fileList) {
-      var _this = this
-      var event = window.event
-      file = event.target.files[0]
-      var reader = new FileReader()
+      let _this = this
+      // let event = window.event
+      file = file.raw
+      let reader = new FileReader()
       // 转base64
       reader.onload = function (e) {
         _this.imageUrl = e.target.result // 将图片路径赋值给src
