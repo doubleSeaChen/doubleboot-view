@@ -3,9 +3,9 @@
     <el-button id="addBtn" size="mini" type="primary" style="float:left;margin-bottom:10px;" @click="showAddUser" v-has="'sys:user:add'">新增</el-button>
     <div class="operationNav">
       <div class="operationNavForm">
-          <el-input v-model="searchUserName" class="searchInput" placeholder="用户名搜索" clearable></el-input>
-          <el-button size="mini" type="primary" icon="el-icon-search" @click="searchData"></el-button>
-          <el-button size="mini" type="primary" style="margin-left:2px;" @click="queryPanle = !queryPanle">更多...</el-button>
+        <el-input v-model="searchUserName" class="searchInput" placeholder="用户名搜索" clearable></el-input>
+        <el-button size="mini" type="primary" icon="el-icon-search" @click="searchData"></el-button>
+        <el-button size="mini" type="primary" style="margin-left:2px;" @click="queryPanle = !queryPanle">更多...</el-button>
       </div>
     </div>
     <transition name="expand">
@@ -22,7 +22,7 @@
               element-loading-text="拼命加载中"
               element-loading-spinner="el-icon-loading"
               element-loading-background="rgba(0, 0, 0, 0.8)"
-       :data="tableDatas" stripe>
+              :data="tableDatas" stripe>
       <el-table-column prop="id" label="id" width="140" v-if="show">
       </el-table-column>
       <el-table-column prop="userName" label="用户名" width="140">
@@ -144,332 +144,337 @@
 </template>
 
 <script>
-import axios from 'axios'
-let checkPhone = (rule, value, callback) => {
-  const phoneReg = /^1[3|4|5|7|8][0-9]{9}$/
+/* eslint-disable */
+  import axios from 'axios'
+  let checkPhone = (rule, value, callback) => {
+    const phoneReg = /^1[3|4|5|7|8][0-9]{9}$/
+    if (!value) {
+      return callback(new Error('请输入电话号码'))
+    }
+    setTimeout(() => {
+      if (phoneReg.test(value)) {
+        callback()
+      } else {
+        callback(new Error('电话号码格式不正确'))
+      }
+    }, 100)
+  }
+  let checkEmail = (rule, value, callback) => {
+    const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
+    if (!value) {
+      return callback(new Error('请输入用户邮箱'))
+    }
+    setTimeout(() => {
+      if (mailReg.test(value)) {
+        callback()
+      } else {
+        callback(new Error('请输入正确的邮箱格式'))
+      }
+    }, 100)
+  }
+
+let checkUserName = (rule, value, callback) => {
   if (!value) {
-    return callback(new Error('请输入电话号码'))
+    return callback(new Error('请输入用户名'))
   }
   setTimeout(() => {
-    if (phoneReg.test(value)) {
-      callback()
-    } else {
-      callback(new Error('电话号码格式不正确'))
-    }
-  }, 100)
-}
-let checkEmail = (rule, value, callback) => {
-  const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
-  if (!value) {
-    return callback(new Error('请输入用户邮箱'))
-  }
-  setTimeout(() => {
-    if (mailReg.test(value)) {
-      callback()
-    } else {
-      callback(new Error('请输入正确的邮箱格式'))
-    }
+    axios.post('/api/user/isExist/' + value
+    ).then(function (response) {
+      if (response.data === 1) {
+        callback(new Error('该用户已存在'))
+      } else {
+        callback()
+      }
+    }).catch(function (respones) {
+    })
   }, 100)
 }
 
-export default {
-  name: 'userTable',
-  data: function () {
-    return {
-      tableDatas: [],
-      deptData: [],
-      defaultProps: {
-        children: 'children',
-        label: 'text'
-      },
-      dialogFormVisible: false,
-      dialogEditFormVisible: false,
-      roles: '',
-      rolesUpdate: '',
-      searchUserName: '',
-      roleList: [],
-      roleUpdateList: [],
-      roleUpdatePre: [],
-      outerVisible: false,
-      innerVisible: false,
-      loading: true,
-      saveBtn: false,
-      queryPanle: false,
-      queryForm: {
-        userName: '',
-        name: ''
-      },
-      form: {
-        userName: '',
-        name: '',
-        password: '',
-        sex: '',
-        email: '',
-        phone: '',
-        deptName: '',
-        deptId: ''
-      },
-      editForm: {
-        id: '',
-        userName: '',
-        name: '',
-        password: '',
-        sex: '',
-        deptName: '',
-        deptId: ''
-      },
-      formLabelWidth: '120px',
-      show: '',
-      total: 0,
-      params: {
-        offset: 0,
-        limit: 10
-      },
-      addRules: {
-        userName: [
-          {required: true, message: '请输入用户名', trigger: 'blur'}
-        ],
-        name: [
-          {required: true, message: '请输入用户姓名', trigger: 'blur'}
-        ],
-        email: [
-          {validator: checkEmail, trigger: 'blur'}
-        ],
-        phone: [
-          {validator: checkPhone, trigger: 'blur'}
-        ],
-        sex: [
-          { required: true, message: '请选择用户性别', trigger: 'change' }
-        ],
-        password: [
-          {required: true, message: '请输入登录密码', trigger: 'blur'},
-          {min: 6, message: '密码长度不少于6个字符', trigger: 'blur'}
-        ]
-      },
-      editRules: {
-        userName: [
-          {required: true, message: '请输入用户名', trigger: 'blur'}
-        ],
-        name: [
-          {required: true, message: '请输入用户姓名', trigger: 'blur'}
-        ],
-        email: [
-          {validator: checkEmail, trigger: 'blur'}
-        ],
-        phone: [
-          {validator: checkPhone, trigger: 'blur'}
-        ],
-        sex: [
-          { required: true, message: '请选择用户性别', trigger: 'change' }
-        ]
-      }
-    }
-  },
-  mounted: function () {
-    this.$nextTick(function () {
-      this.getData(this.params)
-    })
-  },
-  methods: {
-    handleNodeClick (data) {
-      let _this = this
-      _this.form.deptName = data.text
-      _this.form.deptId = data.id
-      _this.editForm.deptName = data.text
-      _this.editForm.deptId = data.id
-      _this.innerVisible = false
-    },
-    getDeptTree: function () {
-      let _this = this
-      _this.innerVisible = true
-      axios.get('/api/system/dept/listTree').then(
-        function (response) {
-          _this.deptData = response.data
+  export default {
+    name: 'userTable',
+    data: function () {
+      return {
+        tableDatas: [],
+        deptData: [],
+        defaultProps: {
+          children: 'children',
+          label: 'text'
+        },
+        dialogFormVisible: false,
+        dialogEditFormVisible: false,
+        roles: '',
+        rolesUpdate: '',
+        searchUserName: '',
+        roleList: [],
+        roleUpdateList: [],
+        roleUpdatePre: [],
+        outerVisible: false,
+        innerVisible: false,
+        loading: true,
+        saveBtn: false,
+        queryPanle: false,
+        queryForm: {
+          userName: '',
+          name: ''
+        },
+        form: {
+          userName: '',
+          name: '',
+          password: '',
+          sex: '',
+          email: '',
+          phone: '',
+          deptName: '',
+          deptId: ''
+        },
+        editForm: {
+          id: '',
+          userName: '',
+          name: '',
+          password: '',
+          sex: '',
+          deptName: '',
+          deptId: ''
+        },
+        formLabelWidth: '120px',
+        show: '',
+        total: 0,
+        params: {
+          offset: 0,
+          limit: 10
+        },
+        addRules: {
+          userName: [ {validator: checkUserName, trigger: 'blur'} ],
+          name: [ {required: true, message: '请输入用户姓名', trigger: 'blur'} ],
+          email: [
+            {validator: checkEmail, trigger: 'blur'}
+          ],
+          phone: [
+            {validator: checkPhone, trigger: 'blur'}
+          ],
+          sex: [
+            { required: true, message: '请选择用户性别', trigger: 'change' }
+          ],
+          password: [
+            {required: true, message: '请输入登录密码', trigger: 'blur'},
+            {min: 6, message: '密码长度不少于6个字符', trigger: 'blur'}
+          ]
+        },
+        editRules: {
+          userName: [
+            {required: true, message: '请输入用户名', trigger: 'blur'}
+          ],
+          name: [
+            {required: true, message: '请输入用户姓名', trigger: 'blur'}
+          ],
+          email: [
+            {validator: checkEmail, trigger: 'blur'}
+          ],
+          phone: [
+            {validator: checkPhone, trigger: 'blur'}
+          ],
+          sex: [
+            { required: true, message: '请选择用户性别', trigger: 'change' }
+          ]
         }
-      ).catch(function (respones) {
-        console.log('请求菜单列表数据失败')
+      }
+    },
+    mounted: function () {
+      this.$nextTick(function () {
+        this.getData(this.params)
       })
     },
-    addUser (form) {
-      let _this = this
-      _this.$refs[form].validate((valid) => {
-        if (valid) {
-          this.saveBtn = true
-          let sex = this.form.sex === 1 ? '男' : '女'
-          let user = {
-            userName: this.form.userName,
-            password: this.form.password,
-            name: this.form.name,
-            email: this.form.email,
-            phone: this.form.phone,
-            roleIds: this.roleList,
-            sex: sex,
-            deptId: this.form.deptId
+    methods: {
+      handleNodeClick (data) {
+        let _this = this
+        _this.form.deptName = data.text
+        _this.form.deptId = data.id
+        _this.editForm.deptName = data.text
+        _this.editForm.deptId = data.id
+        _this.innerVisible = false
+      },
+      getDeptTree: function () {
+        let _this = this
+        _this.innerVisible = true
+        axios.get('/api/system/dept/listTree').then(
+          function (response) {
+            _this.deptData = response.data
           }
-          axios.post('/api/user/save',
-            user
-          ).then(function (response) {
-            if (response.data === 1) {
-              _this.dialogFormVisible = false
-              _this.$message({
-                showClose: true,
-                message: '新增成功',
-                type: 'success'
-              })
-              _this.getData(_this.params)
-            } else {
-              this.$message({
-                showClose: true,
-                message: '新增失败',
-                type: 'error'
-              })
-            }
-          }).catch(function (response) {
+        ).catch(function (respones) {
+          console.log('请求菜单列表数据失败')
+        })
+      },
+      addUser (form) {
+        let _this = this
+        _this.$refs[form].validate((valid) => {
+          if (valid) {
+            this.saveBtn = true
+            let user = JSON.parse(JSON.stringify(this.form))
+            user['roleIds'] = this.roleList
+            axios.post('/api/user/save',
+              user
+            ).then(function (response) {
+              if (response.data === 1) {
+                _this.dialogFormVisible = false
+                _this.$message({
+                  showClose: true,
+                  message: '新增成功',
+                  type: 'success'
+                })
+                _this.getData(_this.params)
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: '新增失败',
+                  type: 'error'
+                })
+              }
+            }).catch(function (response) {
+            })
+          } else {
+            return false
+          }
+        })
+      },
+      handleCurrentChange (val) {
+        this.params.offset = 10 * (val - 1)
+        this.params.limit = 10
+        this.getData(this.params)
+      },
+      getData: function (params) {
+        let _this = this
+        axios.get('/api/user/list', {params: params}).then(function (response) {
+          _this.tableDatas = response.data.userList
+          _this.total = response.data.total
+          _this.loading = false
+        }).catch(function (response) {
+          _this.$message({
+            showClose: true,
+            message: '请求数据失败，请联系管理员...',
+            type: 'error'
           })
-        } else {
-          return false
-        }
-      })
-    },
-    handleCurrentChange (val) {
-      this.params.offset = 10 * (val - 1)
-      this.params.limit = 10
-      this.getData(this.params)
-    },
-    getData: function (params) {
-      let _this = this
-      axios.get('/api/user/list', {params: params}).then(function (response) {
-        _this.tableDatas = response.data.userList
-        _this.total = response.data.total
-        _this.loading = false
-      }).catch(function (response) {
-        _this.$message({
-          showClose: true,
-          message: '请求数据失败，请联系管理员...',
-          type: 'error'
         })
-      })
-    },
-    searchData: function () {
-      let _this = this
-      this.params.offset = 0
-      this.params.limit = 10
-      this.params.userName = this.searchUserName
-      axios.get('/api/user/list', {params: this.params}).then(function (response) {
-        _this.tableDatas = response.data.userList
-        _this.total = response.data.total
-      }).catch(function (response) {
-        _this.$message({
-          showClose: true,
-          message: '查询失败，请联系管理员...',
-          type: 'error'
+      },
+      searchData: function () {
+        let _this = this
+        this.params.offset = 0
+        this.params.limit = 10
+        this.params.userName = this.searchUserName
+        axios.get('/api/user/list', {params: this.params}).then(function (response) {
+          _this.tableDatas = response.data.userList
+          _this.total = response.data.total
+        }).catch(function (response) {
+          _this.$message({
+            showClose: true,
+            message: '查询失败，请联系管理员...',
+            type: 'error'
+          })
         })
-      })
-    },
-    showAddUser: function () {
-      let _this = this
-      this.saveBtn = false
-      axios.get('/api/role/listAll').then(function (response) {
-        _this.roles = response.data
-      }
-      ).catch(function (respones) {
-        console.log('请求菜单列表数据失败')
-      })
-      _this.dialogFormVisible = true
-    },
-    editUser: function (editForm) {
-      let _this = this
-      _this.$refs[editForm].validate((valid) => {
-        if (valid) {
-          this.saveBtn = true
-          let user = {
-            id: this.editForm.id,
-            userName: this.editForm.userName,
-            password: this.editForm.password,
-            name: this.editForm.name,
-            email: this.editForm.email,
-            phone: this.editForm.phone,
-            roleIds: this.roleUpdateList
+      },
+      showAddUser: function () {
+        let _this = this
+        this.saveBtn = false
+        axios.get('/api/role/listAll').then(function (response) {
+            _this.roles = response.data
           }
-          axios.post('/api/user/update',
-            user
+        ).catch(function (respones) {
+          console.log('请求菜单列表数据失败')
+        })
+        _this.dialogFormVisible = true
+      },
+      editUser: function (editForm) {
+        let _this = this
+        _this.$refs[editForm].validate((valid) => {
+          if (valid) {
+            this.saveBtn = true
+            let user = {
+              id: this.editForm.id,
+              userName: this.editForm.userName,
+              password: this.editForm.password,
+              name: this.editForm.name,
+              email: this.editForm.email,
+              phone: this.editForm.phone,
+              roleIds: this.roleUpdateList
+            }
+            axios.post('/api/user/update',
+              user
+            ).then(function (response) {
+              if (response.data === 1) {
+                _this.dialogEditFormVisible = false
+                _this.$message({
+                  showClose: true,
+                  message: '修改成功',
+                  type: 'success'
+                })
+                _this.getData(_this.params)
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: '修改失败',
+                  type: 'error'
+                })
+              }
+            }).catch(function (response) {
+              console.log('前后端分离测试修改失败:' + response)
+            })
+          } else {
+            return false
+          }
+        })
+      },
+      showEditDialog: function (index, row) {
+        let _this = this
+        this.saveBtn = false
+        axios.get('/api/role/listAll').then(function (response) {
+          _this.roleUpdatePre = response.data
+          _this.$nextTick(function () {
+            axios.post('/api/role/listByUserId/' + row.id).then(function (response) {
+              _this.roleUpdateList = []
+              for (var i = 0; i < response.data.length; i++) {
+                _this.roleUpdateList.push(response.data[i].roleId)
+              }
+            }).catch(function (response) {
+            })
+          })
+        })
+        this.dialogEditFormVisible = true
+        this.editForm = Object.assign({}, row)
+      },
+      deleteUser: function (id, name) {
+        let _this = this
+        this.$confirm('是否删除该' + name + '?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          axios.post('/api/user/remove/' + id
           ).then(function (response) {
             if (response.data === 1) {
               _this.dialogEditFormVisible = false
               _this.$message({
                 showClose: true,
-                message: '修改成功',
+                message: '删除成功',
                 type: 'success'
               })
               _this.getData(_this.params)
             } else {
               this.$message({
                 showClose: true,
-                message: '修改失败',
+                message: '删除失败',
                 type: 'error'
               })
             }
           }).catch(function (response) {
-            console.log('前后端分离测试修改失败:' + response)
           })
-        } else {
-          return false
-        }
-      })
-    },
-    showEditDialog: function (index, row) {
-      let _this = this
-      this.saveBtn = false
-      axios.get('/api/role/listAll').then(function (response) {
-        _this.roleUpdatePre = response.data
-        _this.$nextTick(function () {
-          axios.post('/api/role/listByUserId/' + row.id).then(function (response) {
-            _this.roleUpdateList = []
-            for (var i = 0; i < response.data.length; i++) {
-              _this.roleUpdateList.push(response.data[i].roleId)
-            }
-          }).catch(function (response) {
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
           })
         })
-      })
-      this.dialogEditFormVisible = true
-      this.editForm = Object.assign({}, row)
-    },
-    deleteUser: function (id, name) {
-      let _this = this
-      this.$confirm('是否删除该' + name + '?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        axios.post('/api/user/remove/' + id
-        ).then(function (response) {
-          if (response.data === 1) {
-            _this.dialogEditFormVisible = false
-            _this.$message({
-              showClose: true,
-              message: '删除成功',
-              type: 'success'
-            })
-            _this.getData(_this.params)
-          } else {
-            this.$message({
-              showClose: true,
-              message: '删除失败',
-              type: 'error'
-            })
-          }
-        }).catch(function (response) {
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
-      })
+      }
     }
   }
-}
 </script>
 
 <style scoped>
