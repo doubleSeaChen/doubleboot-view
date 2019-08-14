@@ -33,9 +33,7 @@
           trigger="click">
           <div style="text-align: right; margin: 0">
             <span class="personMsg"><a @click="showPersonMsg">个人信息</a></span><hr/>
-            <!--<span class="personMsg"><a @click="addTab(editableTabsValue, '个人信息', '/person_message',2)">个人信息</a></span><hr/>-->
             <span class="personMsg"><a @click="showPwdUpdate">密码修改</a></span><hr/>
-            <!--<span class="personMsg"><a @click="addTab(editableTabsValue, '头像上传', '/head_portrait',2)">头像上传</a></span><hr/>-->
             <span class="personMsg"><a @click="logout">退出</a></span>
           </div>
           <button ref="imgBtn" slot="reference" style="width:40px; height:40px;">
@@ -128,11 +126,17 @@ export default {
     },
     logout: function () {
       let _this = this
-      axios.get('/api/sysLogout').then(function (response) {
-        localStorage.clear()
-        _this.$router.push({path: '/'})
-      }).catch(function (response) {
-        console.log('登出失败:' + response)
+      this.$confirm('您确定要退出系统吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        axios.get('/api/sysLogout').then(function (response) {
+          localStorage.clear()
+          _this.$router.push({path: '/'})
+        }).catch(function (response) {
+        })
+      }).catch(() => {
       })
     },
     addTab (targetName, title, content, addType) {
@@ -321,6 +325,7 @@ export default {
     width: 100%;
     display: block;
     text-align: left;
+    cursor: pointer;
   }
 
   .personMsg a{

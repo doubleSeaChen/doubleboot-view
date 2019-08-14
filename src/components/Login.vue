@@ -84,6 +84,11 @@ export default {
           _this.setPermission(JSON.parse(localStorage.getItem('user')).id)
           // 确定用户登录成后，请求菜单数据存入localstroe,确保存入后再进行页面跳转
           _this.getMenuByUser(JSON.parse(localStorage.getItem('user')).id)
+        } else {
+          _this.$message({
+            type: 'error',
+            message: `用户名或密码错误！`
+          })
         }
       }).catch(function (response) {
         console.log(response)

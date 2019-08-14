@@ -94,11 +94,15 @@
         <el-form-item label="标题" prop="title" :label-width="formLabelWidth">
           <el-input v-model="editForm.title" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="类型" prop="type" :label-width="formLabelWidth">
-          <el-input v-model="editForm.type" autocomplete="off"></el-input>
-        </el-form-item>
         <el-form-item label="内容" prop="content" :label-width="formLabelWidth">
           <el-input v-model="editForm.content" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="接收人" prop="users" :label-width="formLabelWidth">
+          <el-table :data="noticeUser" style="">
+            <el-table-column prop="userName" label="姓名" width="120"></el-table-column>
+            <el-table-column prop="deptName" label="部门" width="120"></el-table-column>
+            <el-table-column label="操作"></el-table-column>
+          </el-table>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -118,6 +122,7 @@ export default {
     return {
       tableDatas: [],
       userDatas: [],
+      noticeUser: [],
       userTotal: 0,
       dialogFormVisible: false,
       dialogEditFormVisible: false,
@@ -306,7 +311,6 @@ export default {
           let notice = {
             id: this.editForm.id,
             title: this.editForm.title,
-            type: this.editForm.type,
             content: this.editForm.content
           }
           axios.post('/api/notice/notice/update',

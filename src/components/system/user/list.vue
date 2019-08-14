@@ -394,6 +394,8 @@ let checkUserName = (rule, value, callback) => {
               name: this.editForm.name,
               email: this.editForm.email,
               phone: this.editForm.phone,
+              deptName: this.editForm.deptName,
+              deptId: this.editForm.deptId,
               roleIds: this.roleUpdateList
             }
             axios.post('/api/user/update',
@@ -438,11 +440,25 @@ let checkUserName = (rule, value, callback) => {
           })
         })
         this.dialogEditFormVisible = true
+        debugger
         this.editForm = Object.assign({}, row)
+        /* axios.post('/api/user/get/'+row.id).then(
+          function (response) {
+            console.log(response.data)
+            _this.editForm.id = response.data.id
+            _this.editForm.userName = response.data.userName
+            _this.editForm.name = response.data.name
+            _this.editForm.email = response.data.email
+            _this.editForm.phone = response.data.phone
+            _this.editForm.deptName = response.data.deptName
+            _this.editForm.deptId = response.data.deptId
+          }
+        ).catch(function (respones) {
+        }) */
       },
       deleteUser: function (id, name) {
         let _this = this
-        this.$confirm('是否删除该' + name + '?', '提示', {
+        this.$confirm('是否删除用户' + name + '?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
