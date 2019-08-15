@@ -94,8 +94,7 @@ export default {
   name: 'mainIndex',
   methods: {
     closeUserMsg: function () {
-      let _this = this
-      _this.userMessageFlag = false
+      this.userMessageFlag = false
     },
     saveUserMsg: function () {
       let _this = this

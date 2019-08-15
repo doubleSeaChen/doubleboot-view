@@ -99,14 +99,20 @@
         </el-form-item>
         <el-form-item label="接收人" prop="users" :label-width="formLabelWidth">
           <el-table :data="noticeUser" style="">
+            <el-table-column prop="id" label="id" width="140" v-if="show"></el-table-column>
             <el-table-column prop="userName" label="姓名" width="120"></el-table-column>
             <el-table-column prop="deptName" label="部门" width="120"></el-table-column>
-            <el-table-column label="操作"></el-table-column>
+            <el-table-column prop="is_read" label="状态" width="120" :formatter="formatStatus"></el-table-column>
+            <el-table-column label="操作">
+              <template slot-scope="scope">
+                <el-button size="mini" type="danger" icon="el-icon-delete" @click="deleteUser(scope.row.id)"></el-button>
+              </template>
+            </el-table-column>
           </el-table>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="dialogFormVisible = false" :disabled="saveBtn">取 消</el-button>
+        <el-button size="mini" @click="dialogEditFormVisible = false" :disabled="saveBtn">取 消</el-button>
         <el-button size="mini" type="primary" v-on:click="editNotice('editForm')" :disabled="saveBtn">确 定</el-button>
       </div>
     </el-dialog>
@@ -114,6 +120,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import axios from 'axios'
 import 'element-ui/lib/theme-chalk/base.css'
 export default {
@@ -141,6 +148,7 @@ export default {
         userIds: ''
       },
       editForm: {
+        id: '',
         title: '',
         type: '',
         content: ''
@@ -181,11 +189,6 @@ export default {
       this.multipleSelection = this.$refs.multipleTable.selection
       let userNames = ''
       let userIds = ''
-      /* this.multipleSelection.forEach(s => {
-        userNames += s.userName + ','
-        userIds += s.id + ','
-      }) */
-      /* eslint-disable */
       for(let i=0; i<this.multipleSelection.length; i++){
         if(i < this.multipleSelection.length-1){
           userNames += this.multipleSelection[i].userName + ','
@@ -298,6 +301,9 @@ export default {
         })
       })
     },
+    formatStatus: function (row, column) {
+      return row.is_read ? '已读' :  '未读'
+    },
     showAddNotice: function () {
       let _this = this
       _this.saveBtn = false
@@ -343,6 +349,41 @@ export default {
       this.saveBtn = false
       this.dialogEditFormVisible = true
       this.editForm = Object.assign({}, row)
+      this.getNotifyUsers(row.id)
+    },
+    getNotifyUsers: function(id){
+      let _this = this
+      axios.post('/api/notice/notice/getNoticeUsers/' + id
+      ).then(function (response) {
+        _this.noticeUser = response.data
+      }).catch(function (response) {
+      })
+    },
+    deleteUser: function(id){
+      let _this = this
+      this.$confirm('删除后改用户无法接收到此条通知!', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        axios.post('/api/notice/notice/removeUser/' + id
+        ).then(function (response) {
+          if (response.data === 1) {
+            _this.$message({
+              showClose: true,
+              message: '删除成功',
+              type: 'success'})
+            _this.getNotifyUsers(_this.editForm.id)
+          } else {
+            this.$message({
+              showClose: true,
+              message: '删除失败',
+              type: 'error'})
+          }
+        }).catch(function (response) {
+        })
+      }).catch(() => {
+      })
     },
     deleteNotice: function (id, name) {
       let _this = this
