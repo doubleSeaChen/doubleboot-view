@@ -1,16 +1,22 @@
 <template>
-  <div class="login_panel">
-    <el-form :model="loginForm" :rules="rules" ref="loginForm" label-width="100px" class="demo-ruleForm">
-      <el-form-item label="用户名" prop="userName">
-        <el-input v-model="loginForm.userName"></el-input>
-      </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-input v-model="loginForm.password" type="password"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="login('loginForm')">登录</el-button>
-      </el-form-item>
-    </el-form>
+  <div style="height: 100%;">
+    <vue-particles color="#e5efed" :particleOpacity="0.7" :particlesNumber="60" shapeType="circle" :particleSize="4"
+                   linesColor="#e5efed" :linesWidth="1" :lineLinked="true" :lineOpacity="0.4" :linesDistance="100"
+                   :moveSpeed="2" :hoverEffect="true" hoverMode="grab" :clickEffect="true" clickMode="push" class="lizi">
+    </vue-particles>
+    <div class="login_panel">
+      <el-form :model="loginForm" :rules="rules" ref="loginForm" label-width="100px" class="demo-ruleForm loginFomr">
+        <el-form-item label="用户名" prop="userName" ref="userNameLabel">
+          <el-input v-model="loginForm.userName"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password" ref="passwordLabel">
+          <el-input v-model="loginForm.password" type="password" class="mmp"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="login('loginForm')">登录</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
   </div>
 </template>
 
@@ -36,6 +42,16 @@ export default {
         ]
       }
     }
+  },
+  /* eslint-disable */
+  mounted: function () {
+    this.$nextTick(function () {
+      const _this = this
+      let userNameLabel = _this.$refs.userNameLabel.$el.childNodes[0]
+      let passwordLabel = _this.$refs.passwordLabel.$el.childNodes[0]
+      userNameLabel.style.color = '#ffffff'
+      passwordLabel.style.color = '#ffffff'
+    })
   },
   methods: {
     /**
@@ -121,7 +137,16 @@ export default {
 
 <style scoped>
   .login_panel {
-    width: 35%;
+    width: 100%;
     margin: 0 auto;
+  }
+  .lizi {
+    height: 100%;
+    background-color: #545c64;
+  }
+  .loginFomr{
+    width: 30%;
+    margin: 0 auto;
+    margin-top: -38%;
   }
 </style>
